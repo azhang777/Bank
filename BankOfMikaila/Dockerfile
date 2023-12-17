@@ -22,4 +22,4 @@ RUN dotnet publish "./BankOfMikaila.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BankOfMikaila.dll"]
+ENTRYPOINT ["dotnet", "BankOfMikaila.dll"]o
