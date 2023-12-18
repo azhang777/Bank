@@ -11,14 +11,13 @@ namespace BankOfMikaila.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         [Required]
-        public AccountType AccountType { get; set; };
+        public AccountType AccountType { get; set; }
         [Required]
         public string NickName { get; set; }
         [Required]
         public int Rewards { get; set; }
         [Required]
         public double Balance { get; set; }
-
         public long CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }

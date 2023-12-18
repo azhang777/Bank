@@ -8,7 +8,7 @@ namespace BankOfMikaila.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long id;
+        public long Id { get; set; }
         [Required]
         public string StreetNumber { get; set; }
         [Required]
@@ -20,7 +20,6 @@ namespace BankOfMikaila.Models
         [Required]
         public string ZipCode { get; set; }
         public long CustomerId { get; set; }
-        [JsonIgnore]
-        public string Customer { get; set; }
+
     }
 }
