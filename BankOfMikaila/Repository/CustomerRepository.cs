@@ -4,17 +4,17 @@ using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Repository
 {
-    public class AccountRepository: Repository<Account>, IAccountRepository
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         private readonly ApplicationDbContext _db;
-        public AccountRepository(ApplicationDbContext db): base(db)
+        public CustomerRepository(ApplicationDbContext db): base(db)
         {
             _db = db;
         }
 
-        public void Update(Account account)
+        public void Update(Customer customer)
         {
-            _db.Update(account);
+            _db.Update(customer);
             _db.SaveChanges();
         }
     }
