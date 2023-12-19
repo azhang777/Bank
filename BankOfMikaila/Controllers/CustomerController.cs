@@ -7,7 +7,7 @@ namespace BankOfMikaila.Controllers
 {
     //have the controller talk to the response and handle exceptions as early as possible.
     //this should be where logger is bc of exception handling
-    [Route("api/customers")]
+    [Microsoft.AspNetCore.Mvc.Route("api/customers")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -39,5 +39,6 @@ namespace BankOfMikaila.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
+
     }
 }

@@ -26,5 +26,38 @@ namespace BankOfMikaila.Services
                 _customerRepository.Save();
                 return customer;
         }
+
+        public Customer GetCustomer(long id)
+        {
+            return _customerRepository.Get(e => e.Id == id);
+        }
+
+        public IEnumerable<Customer> GetAllCustomers() 
+        { 
+            return _customerRepository.GetAll();
+        }
+
+        public Customer UpdateCustomer(long id, Customer customer)
+        {
+            var existingCustomer = GetCustomer(id);
+
+            existingCustomer.FirstName = customer.FirstName;
+            existingCustomer.LastName = customer.LastName;
+
+            _customerRepository.Update(existingCustomer);
+            _customerRepository.Save();
+            return existingCustomer;
+        }
+
+        //public bool DeleteCustomer(long id)
+        //{
+        //    var customerToDelete = GetCustomer(id);
+
+        //    _customerRepository.Remove(customerToDelete);
+        //    return _customerRepository.Save(); 
+        //}
+
+        //GetCustomerByAccountId
+        //GetAllCustomerAccounts
     }
 }
