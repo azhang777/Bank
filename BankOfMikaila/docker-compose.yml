@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+    web_api:
+        image: web_api
+        container_name: web_api_application
+        ports:
+          - "5323:8888"
+  
+    sql:
+        image: "mcr.microsoft.com/mssql/server"
+        container_name: "dotnetmssql"
+        ports:
+          - "1433:1433"
+        environment:
+          - ACCEPT_EULA=y
+          - SA_PASSWORD=@Ndy021003   
