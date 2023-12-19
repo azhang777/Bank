@@ -1,4 +1,7 @@
 using BankOfMikaila.Data;
+using BankOfMikaila.Repository;
+using BankOfMikaila.Repository.IRepository;
+using BankOfMikaila.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
 
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<AccountService>();
 
 
 builder.Services.AddControllers();
