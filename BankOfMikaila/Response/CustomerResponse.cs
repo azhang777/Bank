@@ -2,6 +2,7 @@
 using BankOfMikaila.Models;
 using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
+using BankOfMikaila.Response.Format;
 using BankOfMikaila.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,9 +26,9 @@ namespace BankOfMikaila.Response
             Customer customer = _mapper.Map<Customer>(customerCreateDTO);
             DataResponse successResponse = new()
             {
-                Data = _customerService.CreateCustomer(customer),
                 Code = StatusCodes.Status201Created,
-                Message = "Success - Customer created"
+                Message = "Success - Customer created",
+                Data = _customerService.CreateCustomer(customer)
             };
 
             return successResponse;
@@ -37,9 +38,9 @@ namespace BankOfMikaila.Response
         {
             DataResponse successResponse = new()
             {
-                Data = _customerService.GetCustomer(id),
                 Code = StatusCodes.Status200OK,
-                Message = "Success - Customer retrieved"
+                Message = "Success - Customer retrieved",
+                Data = _customerService.GetCustomer(id)
             };
 
             return successResponse;
@@ -49,9 +50,9 @@ namespace BankOfMikaila.Response
         {
             DataResponse successResponse = new()
             {
-                Data = _customerService.GetAllCustomers(),
                 Code = StatusCodes.Status200OK,
-                Message = "Success - All customers retrieved"
+                Message = "Success - All customers retrieved",
+                Data = _customerService.GetAllCustomers(),
             };
 
             return successResponse;
@@ -62,9 +63,9 @@ namespace BankOfMikaila.Response
             Customer customer = _mapper.Map< Customer>(customerUpdateDTO);
             DataResponse successResponse = new()
             {
-                Data = _customerService.UpdateCustomer(id, customer),
                 Code = StatusCodes.Status202Accepted,
-                Message = "Success - Customer updated"
+                Message = "Success - Customer updated",
+                Data = _customerService.UpdateCustomer(id, customer),
             };
 
             return successResponse;

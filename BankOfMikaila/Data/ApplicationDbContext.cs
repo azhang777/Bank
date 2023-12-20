@@ -39,6 +39,16 @@ namespace BankOfMikaila.Data
                     CustomerId = 1
                 }
                 );
+            modelBuilder.Entity<Customer>()
+                .HasMany(customer => customer.Address)
+                .WithOne(address => address.Customer)
+                .HasForeignKey(address => address.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Account>()
+                .HasOne(account => account.Customer)
+                .WithMany()
+                .HasForeignKey(account => account.CustomerId);
 
             modelBuilder.Entity<Transaction>()
                 .HasOne(p => p.Account1)

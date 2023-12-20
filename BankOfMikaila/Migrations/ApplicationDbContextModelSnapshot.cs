@@ -234,11 +234,13 @@ namespace BankOfMikaila.Migrations
 
             modelBuilder.Entity("BankOfMikaila.Models.Address", b =>
                 {
-                    b.HasOne("BankOfMikaila.Models.Customer", null)
+                    b.HasOne("BankOfMikaila.Models.Customer", "Customer")
                         .WithMany("Address")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.Bill", b =>

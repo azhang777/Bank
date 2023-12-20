@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BankOfMikaila.Migrations
 {
     /// <inheritdoc />
-    public partial class finalizeTesting : Migration
+    public partial class AddRelationship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

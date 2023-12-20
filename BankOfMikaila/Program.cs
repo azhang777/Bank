@@ -21,7 +21,7 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AccountService>();
 
 builder.Services.AddScoped<CustomerResponse>();
-
+builder.Services.AddScoped<AccountResponse>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

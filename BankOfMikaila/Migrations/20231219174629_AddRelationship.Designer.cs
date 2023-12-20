@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankOfMikaila.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231218052533_finalizeTesting")]
-    partial class finalizeTesting
+    [Migration("20231219174629_AddRelationship")]
+    partial class AddRelationship
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -237,11 +237,13 @@ namespace BankOfMikaila.Migrations
 
             modelBuilder.Entity("BankOfMikaila.Models.Address", b =>
                 {
-                    b.HasOne("BankOfMikaila.Models.Customer", null)
+                    b.HasOne("BankOfMikaila.Models.Customer", "Customer")
                         .WithMany("Address")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.Bill", b =>

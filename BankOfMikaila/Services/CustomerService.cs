@@ -11,13 +11,10 @@ namespace BankOfMikaila.Services
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IAccountRepository _accountRepository;
-        private readonly IMapper _mapper;
-
-        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository, IMapper mapper)
+        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository)
         {
             _customerRepository = customerRepository;
             _accountRepository = accountRepository;
-            _mapper = mapper;
         }
 
         public Customer CreateCustomer(Customer customer)
@@ -29,12 +26,12 @@ namespace BankOfMikaila.Services
 
         public Customer GetCustomer(long id)
         {
-            return _customerRepository.Get(e => e.Id == id);
+            return _customerRepository.Get(id, customer => customer.Address);
         }
 
         public IEnumerable<Customer> GetAllCustomers() 
         { 
-            return _customerRepository.GetAll();
+            return _customerRepository.GetAll(customer => customer.Address);
         }
 
         public Customer UpdateCustomer(long id, Customer customer)

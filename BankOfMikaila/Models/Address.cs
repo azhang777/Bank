@@ -21,5 +21,8 @@ namespace BankOfMikaila.Models
         public string ZipCode { get; set; }
         public long CustomerId { get; set; }
 
+        [ForeignKey(nameof(CustomerId))]
+        [JsonIgnore] //need to ignore to avoid infinite looping
+        public Customer Customer { get; set; }
     }
 }

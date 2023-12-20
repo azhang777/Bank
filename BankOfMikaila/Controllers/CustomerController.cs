@@ -1,29 +1,32 @@
 ﻿using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response;
-using Microsoft.AspNetCore.Components;
+using BankOfMikaila.Response.Format;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankOfMikaila.Controllers
 {
     //have the controller talk to the response and handle exceptions as early as possible.
     //this should be where logger is bc of exception handling
-    [Microsoft.AspNetCore.Mvc.Route("api/customers")]
+    
     [ApiController]
+    [Route("api/customers")]
     public class CustomerController : ControllerBase
     {
         private readonly CustomerResponse _customerResponse;
+        private readonly AccountResponse _accountResponse;
         //logger
-        public CustomerController(CustomerResponse customerResponse)
+        public CustomerController(CustomerResponse customerResponse, AccountResponse accountResponse)
         {
             _customerResponse = customerResponse;
+            _accountResponse = accountResponse;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<APIResponse> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
+        public ActionResult<DataResponse> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
         {
 
             try
@@ -32,7 +35,7 @@ namespace BankOfMikaila.Controllers
             }
             catch (Exception ex)
             {
-                APIResponse errorResponse = new()
+                ErrorResponse errorResponse = new()
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Message = ex.Message
@@ -42,72 +45,92 @@ namespace BankOfMikaila.Controllers
             }
         }
 
-        //[HttpGet("{id}", Name = "GetCustomer")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public ActionResult<APIResponse> GetCustomer(long id)
-        //{
-        //    try
-        //    {
-        //        return _customerResponse.GetCustomer(id);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        APIResponse errorResponse = new()
-        //        {
-        //            Code = StatusCodes.Status500InternalServerError,
-        //            Message = ex.Message
-        //        };
+        [HttpGet("{customerId}", Name = "GetCustomer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetCustomer(long customerId)
+        {
+            try
+            {
+                return _customerResponse.GetCustomer(customerId);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
 
-        //        return StatusCode(StatusCodes.Status100Continue, errorResponse);
-        //    }
-        //}
+                return StatusCode(StatusCodes.Status100Continue, errorResponse);
+            }
+        }
 
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public ActionResult<APIResponse> GetAllCustomers()
-        //{
-        //    try
-        //    {
-        //        return _customerResponse.GetAllCustomers();
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        APIResponse errorResponse = new()
-        //        {
-        //            Code = StatusCodes.Status500InternalServerError,
-        //            Message = ex.Message
-        //        };
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetAllCustomers()
+        {
+            try
+            {
+                return _customerResponse.GetAllCustomers();
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
 
-        //        return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-        //    }
-        //}
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
 
-        //[HttpPut("{id}", Name = "UpdateCustomer")]
-        //[ProducesResponseType(StatusCodes.Status202Accepted)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public ActionResult<APIResponse> UpdateCustomer(long id, [FromBody] CustomerUpdateDTO customerUpdateDTO)
-        //{
-        //    try
-        //    {
-        //        return _customerResponse.UpdateCustomer(id, customerUpdateDTO);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        APIResponse errorResponse = new()
-        //        {
-        //            Code = StatusCodes.Status500InternalServerError,
-        //            Message = ex.Message
-        //        };
+        [HttpPut("{customerId}", Name = "UpdateCustomer")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> UpdateCustomer(long customerId, [FromBody] CustomerUpdateDTO customerUpdateDTO)
+        {
+            try
+            {
+                return _customerResponse.UpdateCustomer(customerId, customerUpdateDTO);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
 
-        //        return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-        //    }
-        //}
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
 
+        [HttpPost("{customerId}/accounts", Name = "CreateCustomer")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
+        {
+            try
+            {
+                return _accountResponse.CreateAccount(customerId, accountCreateDTO);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
 
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
     }
 }

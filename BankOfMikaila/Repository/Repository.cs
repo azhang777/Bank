@@ -23,27 +23,24 @@ namespace BankOfMikaila.Repository
             }
         }
 
-        public T Get(Expression<Func<T, bool>>? filter = null, bool tracked = true)
+        public T Get<TKey>(TKey id, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = dbSet;
-            if (!tracked)
+            foreach (var includeProperty in includeProperties)
             {
-                query = query.AsNoTracking();
-            }
-            if (filter != null)
-            {
-                query = query.Where(filter);
+                query = query.Include(includeProperty);
             }
 
-            return query.FirstOrDefault();
+            return query.FirstOrDefault(e => EF.Property<TKey>(e, "Id").Equals(id));
         }
 
-        public List<T> GetAll(Expression<Func<T, bool>>? filter = null)
+        public List<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = dbSet;
-            if(filter != null)
+
+            foreach (var includeProperty in includeProperties)
             {
-                query = query.Where(filter);
+                query = query.Include(includeProperty);
             }
 
             return query.ToList();
