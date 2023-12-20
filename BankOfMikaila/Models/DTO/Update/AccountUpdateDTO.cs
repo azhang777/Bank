@@ -8,6 +8,5 @@ namespace BankOfMikaila.Models.DTO.Update
         public string NickName { get; set; }
         public int Rewards { get; set; }
         public double Balance { get; set; }
-        public Customer Customer { get; set; }
     }
 }

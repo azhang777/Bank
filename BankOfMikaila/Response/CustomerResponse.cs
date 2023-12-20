@@ -23,24 +23,36 @@ namespace BankOfMikaila.Response
 
         public DataResponse CreateCustomer(CustomerCreateDTO customerCreateDTO)
         {
-            Customer customer = _mapper.Map<Customer>(customerCreateDTO);
+            Customer newCustomer = _mapper.Map<Customer>(customerCreateDTO);
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status201Created,
                 Message = "Success - Customer created",
-                Data = _customerService.CreateCustomer(customer)
+                Data = _customerService.CreateCustomer(newCustomer)
             };
 
             return successResponse;
         }
 
-        public DataResponse GetCustomer(long id)
+        public DataResponse GetCustomer(long customerId)
         {
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - Customer retrieved",
-                Data = _customerService.GetCustomer(id)
+                Data = _customerService.GetCustomer(customerId)
+            };
+
+            return successResponse;
+        }
+
+        public DataResponse GetCustomerByAccount(long accountId)
+        {
+            DataResponse successResponse = new()
+            {
+                Code = StatusCodes.Status200OK,
+                Message = "Success - Customer retrieved by account",
+                Data = _customerService.GetCustomerByAccount(accountId)
             };
 
             return successResponse;
@@ -58,14 +70,14 @@ namespace BankOfMikaila.Response
             return successResponse;
         }
 
-        public DataResponse UpdateCustomer(long id, CustomerUpdateDTO customerUpdateDTO)
+        public DataResponse UpdateCustomer(long customerId, CustomerUpdateDTO customerUpdateDTO)
         {
-            Customer customer = _mapper.Map< Customer>(customerUpdateDTO);
+            Customer updatedCustomer = _mapper.Map< Customer>(customerUpdateDTO);
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status202Accepted,
                 Message = "Success - Customer updated",
-                Data = _customerService.UpdateCustomer(id, customer),
+                Data = _customerService.UpdateCustomer(customerId, updatedCustomer),
             };
 
             return successResponse;

@@ -46,6 +46,18 @@ namespace BankOfMikaila.Repository
             return query.ToList();
         }
 
+        public List<T> GetAllFiltered(Expression<Func<T, bool>>? filter = null)
+        {
+            IQueryable<T> query = dbSet; // does not get executed right away, we can build it.
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return query.ToList(); //at this point the query will get executed
+        }
+
         public void Remove(T entity)
         {
             dbSet.Remove(entity);

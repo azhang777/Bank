@@ -39,6 +39,7 @@ namespace BankOfMikaila.Data
                     CustomerId = 1
                 }
                 );
+
             modelBuilder.Entity<Customer>()
                 .HasMany(customer => customer.Address)
                 .WithOne(address => address.Customer)

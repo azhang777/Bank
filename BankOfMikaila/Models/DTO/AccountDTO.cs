@@ -9,6 +9,6 @@ namespace BankOfMikaila.Models.DTO
         public string NickName { get; set; }
         public int Rewards { get; set; }
         public double Balance { get; set; }
-        public Customer Customer { get; set; }
+        public long CustomerId { get; set; }
     }
 }

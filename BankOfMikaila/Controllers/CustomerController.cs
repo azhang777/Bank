@@ -47,7 +47,7 @@ namespace BankOfMikaila.Controllers
 
         [HttpGet("{customerId}", Name = "GetCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetCustomer(long customerId)
         {
@@ -111,15 +111,38 @@ namespace BankOfMikaila.Controllers
             }
         }
 
-        [HttpPost("{customerId}/accounts", Name = "CreateCustomer")]
+        [HttpPost("{customerId}/accounts", Name = "CreateAccount")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
         {
             try
             {
                 return _accountResponse.CreateAccount(customerId, accountCreateDTO);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpGet("{customerId}/accounts", Name = "GetAccountsByCustomer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetAccountsByCustomer(long customerId)
+        {
+            try
+            {
+                return _accountResponse.GetAccountsByCustomer(customerId);
             }
             catch (Exception ex)
             {
