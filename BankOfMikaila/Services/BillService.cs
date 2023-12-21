@@ -50,6 +50,24 @@ namespace BankOfMikaila.Services
             return billsFromCustomer;
         }
 
+        public Bill updateBill(long billId, Bill updatedBill)
+        {
+            var existingBill = _billRepository.Get(billId);
+
+            existingBill.TransactionStatus = updatedBill.TransactionStatus;
+            existingBill.Payee = updatedBill.Payee;
+            existingBill.NickName = updatedBill.NickName;
+            existingBill.CreationDate = updatedBill.CreationDate;
+            existingBill.PaymentDate = updatedBill.PaymentDate;
+            existingBill.RecurringDate = updatedBill.RecurringDate;
+            existingBill.UpcomingPaymentDate = updatedBill.UpcomingPaymentDate;
+            existingBill.PaymentAmount = updatedBill.PaymentAmount;
+
+            _billRepository.Update(existingBill);
+            _billRepository.Save();
+
+            return existingBill;
+        }
         public void DeleteBill(long billId)
         {
             var billToDlete = _billRepository.Get(billId);
