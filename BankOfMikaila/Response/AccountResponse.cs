@@ -84,7 +84,7 @@ namespace BankOfMikaila.Response
         public DataResponse DeleteAccount(long accountId)
         {
             _accountService.DeleteAccount(accountId);
-            DataResponse successResponse = new()
+            DataResponse successResponse = new() //this is not really used, but ill keep it here
             {
                 Code = StatusCodes.Status204NoContent,
                 Message = "Success - Account deleted"

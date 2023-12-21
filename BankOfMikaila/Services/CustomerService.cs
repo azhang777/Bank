@@ -12,13 +12,11 @@ namespace BankOfMikaila.Services
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IAccountRepository _accountRepository;
-        private readonly IAddressRepository _addressRepository;
         
-        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository, IAddressRepository addressRepository)
+        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository)
         {
             _customerRepository = customerRepository;
             _accountRepository = accountRepository;
-            _addressRepository = addressRepository;
         }
 
         public Customer CreateCustomer(Customer customer)
@@ -47,30 +45,19 @@ namespace BankOfMikaila.Services
 
             for (int i = 0; i < updatedCustomer.Address.Count; i++)
             {
-                if (i < existingCustomer.Address.Count)
+                if (i < existingCustomer.Address.Count) //handle updating the addressses of the customer. Overrides existing addresses with the updated addresses (in order)
                 {
-                    existingCustomer.Address[i].StreetName = updatedCustomer.Address[i].StreetName;
+                    existingCustomer.Address[i].StreetName = updatedCustomer.Address[i].StreetName; 
                     existingCustomer.Address[i].StreetNumber = updatedCustomer.Address[i].StreetNumber;
                     existingCustomer.Address[i].City = updatedCustomer.Address[i].City;
                     existingCustomer.Address[i].State = updatedCustomer.Address[i].State;
                     existingCustomer.Address[i].ZipCode = updatedCustomer.Address[i].ZipCode;
                 }
-                else
+                else //updated customer could have more addresses than its previous state, if so add the new addresses to the list
                 {
                     existingCustomer.Address.Add(updatedCustomer.Address[i]);
                 }
             }
-
-            //foreach (var address in existingCustomer.Address)
-            //{
-            //    var updatedAddress = updatedCustomer.Address.FirstOrDefault(x => x.Id == address.Id);
-            //    address.StreetNumber = updatedAddress.StreetNumber;
-            //    address.StreetName = updatedAddress.StreetName;
-            //    address.City = updatedAddress.City;
-            //    address.State = updatedAddress.State;
-            //    address.ZipCode = updatedAddress.ZipCode;
-            //    _addressRepository.Update(address);
-            //}
 
             _customerRepository.Update(existingCustomer);
             _customerRepository.Save();
