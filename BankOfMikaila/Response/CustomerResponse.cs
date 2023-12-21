@@ -21,17 +21,17 @@ namespace BankOfMikaila.Response
             _mapper = mapper;
         }
 
-        public DataResponse CreateCustomer(CustomerCreateDTO customerCreateDTO)
+        public Customer CreateCustomer(CustomerCreateDTO customerCreateDTO)
         {
             Customer newCustomer = _mapper.Map<Customer>(customerCreateDTO);
-            DataResponse successResponse = new()
-            {
-                Code = StatusCodes.Status201Created,
-                Message = "Success - Customer created",
-                Data = _customerService.CreateCustomer(newCustomer)
-            };
+            //DataResponse successResponse = new()
+            //{
+            //    Code = StatusCodes.Status201Created,
+            //    Message = "Success - Customer created",
+            //    Data = _customerService.CreateCustomer(newCustomer)
+            //};
 
-            return successResponse;
+            return _customerService.CreateCustomer(newCustomer);
         }
 
         public DataResponse GetCustomer(long customerId)
@@ -73,11 +73,11 @@ namespace BankOfMikaila.Response
         public DataResponse UpdateCustomer(long customerId, CustomerUpdateDTO customerUpdateDTO)
         {
             Customer updatedCustomer = _mapper.Map< Customer>(customerUpdateDTO);
+            _customerService.UpdateCustomer(customerId, updatedCustomer);
             DataResponse successResponse = new()
             {
-                Code = StatusCodes.Status202Accepted,
+                Code = StatusCodes.Status200OK,
                 Message = "Success - Customer updated",
-                Data = _customerService.UpdateCustomer(customerId, updatedCustomer),
             };
 
             return successResponse;

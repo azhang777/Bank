@@ -21,7 +21,6 @@ namespace BankOfMikaila.Controllers
 
         [HttpGet("{accountId}", Name = "GetAccount")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAccount(long accountId)
         {
@@ -85,7 +84,7 @@ namespace BankOfMikaila.Controllers
         }
 
         [HttpPut("{accountId}", Name = "UpdateAccount")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -111,11 +110,12 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<DataResponse> DeleteAccount(long accountId) 
+        public IActionResult DeleteAccount(long accountId) 
         {
             try
             {
-                return _accountResponse.DeleteAccount(accountId);
+                _accountResponse.DeleteAccount(accountId);
+                return NoContent();
             }
             catch (Exception ex)
             {

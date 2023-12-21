@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO;
 using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response.Format;
@@ -18,17 +19,17 @@ namespace BankOfMikaila.Response
             _mapper = mapper;
         }
 
-        public DataResponse CreateAccount(long customerId, AccountCreateDTO accountCreateDTO)
+        public AccountDTO CreateAccount(long customerId, AccountCreateDTO accountCreateDTO)
         {
             var newAccount = _mapper.Map<Account>(accountCreateDTO);
-            DataResponse successResponse = new()
-            {
-                Code = StatusCodes.Status201Created,
-                Message = "Success - Account created",
-                Data = _accountService.CreateAccount(customerId, newAccount)
-            };
+            //DataResponse successResponse = new()
+            //{
+            //    Code = StatusCodes.Status201Created,
+            //    Message = "Success - Account created",
+            //    Data = _accountService.CreateAccount(customerId, newAccount)
+            //};
 
-            return successResponse;
+            return _accountService.CreateAccount(customerId, newAccount);
         }
 
         public DataResponse GetAccount(long accountId)
@@ -70,11 +71,11 @@ namespace BankOfMikaila.Response
         public DataResponse UpdateAccount(long accountId, AccountUpdateDTO accountUpdateDTO)
         {
             var updatedAccount = _mapper.Map<Account>(accountUpdateDTO);
+            _accountService.UpdateAccount(accountId, updatedAccount);
             DataResponse successResponse = new()
             {
-                Code = StatusCodes.Status202Accepted,
+                Code = StatusCodes.Status200OK,
                 Message = "Success - Account updated",
-                Data = _accountService.UpdateAccount(accountId, updatedAccount)
             };
 
             return successResponse;

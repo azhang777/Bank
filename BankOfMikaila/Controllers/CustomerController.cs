@@ -1,7 +1,9 @@
 ﻿using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
+using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankOfMikaila.Controllers
@@ -31,7 +33,16 @@ namespace BankOfMikaila.Controllers
 
             try
             {
-                return _customerResponse.CreateCustomer(customerCreateDTO);
+
+                var customer = _customerResponse.CreateCustomer(customerCreateDTO);
+                DataResponse successResponse = new()
+                {
+                    Code = StatusCodes.Status201Created,
+                    Message = "Success - Customer created",
+                    Data = customer
+                };
+
+                return CreatedAtRoute("GetCustomer", new { customerId = customer.Id }, successResponse); //new customerId needs to match the argument in GetCustomer customerId, it is not id!
             }
             catch (Exception ex)
             {
@@ -89,7 +100,7 @@ namespace BankOfMikaila.Controllers
         }
 
         [HttpPut("{customerId}", Name = "UpdateCustomer")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -120,7 +131,15 @@ namespace BankOfMikaila.Controllers
         {
             try
             {
-                return _accountResponse.CreateAccount(customerId, accountCreateDTO);
+                var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
+                DataResponse successResponse = new()
+                {
+                    Code = StatusCodes.Status201Created,
+                    Message = "Success - Account created",
+                    Data = accountDTO
+                };
+
+                return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
             }
             catch (Exception ex)
             {

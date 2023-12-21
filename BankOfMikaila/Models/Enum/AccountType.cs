@@ -6,10 +6,10 @@ namespace BankOfMikaila.Models.Enum
     public enum AccountType
     {
         [EnumMember(Value = "SAVINGS")]
-        SAVINGS,
+        SAVINGS = 1,
         [EnumMember(Value = "CHECKINGS")]
-        CHECKINGS,
+        CHECKINGS = 2,
         [EnumMember(Value = "CREDIT")]
-        CREDIT
+        CREDIT = 3
     }
 }

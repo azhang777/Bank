@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Principal;
+using System.Text.Json.Serialization;
 using BankOfMikaila.Models.Enum;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace BankOfMikaila.Models
 {
