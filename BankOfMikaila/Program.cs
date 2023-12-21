@@ -15,7 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AccountService>();
 

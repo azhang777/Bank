@@ -14,6 +14,6 @@ namespace BankOfMikaila.Models
         [Required]
         public string LastName { get; set; }
         [Required]
-        public ICollection<Address> Address {  get; set; }
+        public IList<Address> Address {  get; set; }
     }
 }

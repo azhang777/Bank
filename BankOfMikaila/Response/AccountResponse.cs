@@ -28,8 +28,8 @@ namespace BankOfMikaila.Response
             //    Message = "Success - Account created",
             //    Data = _accountService.CreateAccount(customerId, newAccount)
             //};
-
-            return _accountService.CreateAccount(customerId, newAccount);
+            var result = _mapper.Map<AccountDTO>(_accountService.CreateAccount(customerId, newAccount));
+            return result;
         }
 
         public DataResponse GetAccount(long accountId)
@@ -38,7 +38,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - Account retrieved",
-                Data = _accountService.GetAccount(accountId)
+                Data = _mapper.Map<AccountDTO>(_accountService.GetAccount(accountId))
             };
 
             return successResponse;
@@ -50,7 +50,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - All accounts retrieved",
-                Data = _accountService.GetAllAccounts()
+                Data = _mapper.Map<IEnumerable<AccountDTO>>(_accountService.GetAllAccounts())
             };
 
             return successResponse;
@@ -62,7 +62,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - All accounts for customer retrieved",
-                Data = _accountService.GetAccountsByCustomer(customerId)
+                Data = _mapper.Map< IEnumerable<AccountDTO>>(_accountService.GetAccountsByCustomer(customerId))
             };
 
             return successResponse;

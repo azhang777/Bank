@@ -56,7 +56,7 @@ namespace BankOfMikaila.Services
 
             existingBill.TransactionStatus = updatedBill.TransactionStatus;
             existingBill.Payee = updatedBill.Payee;
-            existingBill.NickName = updatedBill.NickName;
+            existingBill.NickName = updatedBill.NickName; 
             existingBill.CreationDate = updatedBill.CreationDate;
             existingBill.PaymentDate = updatedBill.PaymentDate;
             existingBill.RecurringDate = updatedBill.RecurringDate;
