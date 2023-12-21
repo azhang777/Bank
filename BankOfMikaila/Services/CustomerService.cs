@@ -42,6 +42,7 @@ namespace BankOfMikaila.Services
 
             existingCustomer.FirstName = updatedCustomer.FirstName;
             existingCustomer.LastName = updatedCustomer.LastName;
+            existingCustomer.Address = updatedCustomer.Address;
 
             _customerRepository.Update(existingCustomer);
             _customerRepository.Save();

@@ -38,10 +38,8 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<AccountDTO> GetAllAccounts() 
         {
-            IEnumerable<Account> retrieveAccounts = _accountRepository.GetAll();
-            IEnumerable<AccountDTO> resultAccounts = _mapper.Map<IEnumerable<AccountDTO>>(retrieveAccounts);
-
-            return resultAccounts;
+            var accounts = _mapper.Map<IEnumerable<AccountDTO>>(_accountRepository.GetAll());
+            return accounts;
         }
 
         public IEnumerable<AccountDTO> GetAccountsByCustomer(long customerId)

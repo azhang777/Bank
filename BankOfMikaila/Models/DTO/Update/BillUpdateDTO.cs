@@ -12,6 +12,5 @@ namespace BankOfMikaila.Models.DTO.Update
         public int RecurringDate { get; set; }
         public string UpcomingPaymentDate { get; set; }
         public double PaymentAmount { get; set; }
-        public long AccountId { get; set; }
     }
 }
