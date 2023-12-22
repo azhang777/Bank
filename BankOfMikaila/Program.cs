@@ -15,12 +15,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IBillRepository, BillRepository>();
+
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<BillService>();
 
 builder.Services.AddScoped<CustomerResponse>();
 builder.Services.AddScoped<AccountResponse>();
+builder.Services.AddScoped<BillResponse>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

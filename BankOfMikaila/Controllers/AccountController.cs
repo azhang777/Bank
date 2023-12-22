@@ -1,4 +1,4 @@
-﻿using BankOfMikaila.Models.DTO.Create;
+﻿
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
@@ -21,6 +21,7 @@ namespace BankOfMikaila.Controllers
 
         [HttpGet("{accountId}", Name = "GetAccount")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAccount(long accountId)
         {

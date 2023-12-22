@@ -45,7 +45,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - Bills retrieved by account",
-                Data = _mapper.Map<BillDTO>(_billService.GetBillsByAccount(accountId))
+                Data = _mapper.Map<IEnumerable<BillDTO>>(_billService.GetBillsByAccount(accountId))
             };
 
             return successResponse;
@@ -57,7 +57,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - Bills retrieved by customer",
-                Data = _mapper.Map<BillDTO>(_billService.GetBillsByCustomer(customerId))
+                Data = _mapper.Map<IEnumerable<BillDTO>>(_billService.GetBillsByCustomer(customerId))
             };
 
             return successResponse;
