@@ -11,6 +11,7 @@ namespace BankOfMikaila.Models
         public long Id { get; set; }
         [Required]
         public TransactionType TransactionType { get; set; }
+
         public DateTime TransactionDate { get; set; }
         [Required]
         public TransactionStatus TransactionStatus { get; set; }
@@ -23,8 +24,7 @@ namespace BankOfMikaila.Models
         [ForeignKey("Account1_Id")]
         public long Account1_Id { get; set; }
         public virtual Account Account1 { get; set; }
-        [Required]
-        public string Discriminator { get; set; }
+
         public Transaction()
         {
             TransactionDate = DateTime.Now;

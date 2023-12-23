@@ -1,6 +1,45 @@
-﻿namespace BankOfMikaila.Response
+﻿using AutoMapper;
+using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO.Update;
+using BankOfMikaila.Response.Format;
+using BankOfMikaila.Services;
+
+namespace BankOfMikaila.Response
 {
     public class WithdrawalResponse
     {
+        private readonly WithdrawalService _withdrawalService;
+        private readonly IMapper _mapper;
+
+        public WithdrawalResponse(WithdrawalService withdrawalService, IMapper mapper)
+        {
+            _withdrawalService = withdrawalService;
+            _mapper = mapper;
+        }
+
+        public WithdrawalDTO CreateWithdrawal(long accountId, WithdrawalCreateDTO withdrawalCreateDTO)
+        {
+            var withdrawal = _mapper.Map<Withdrawal>(withdrawalCreateDTO);
+            //DataResponse successResponse = new()
+            //{
+            //    Code = StatusCodes.Status201Created,
+            //    Message = "Success - Withdrawal created",
+            //    Data = _mapper.Map<WithdrawalDTO>(_withdrawalService.CreateWithdrawal)
+            //};
+            var result = _mapper.Map<WithdrawalDTO>(_withdrawalService.CreateWithdrawal(accountId, withdrawal));
+            return result;
+        }
+
+        public DataResponse GetWithdrawal(long withdrawalId)
+        {
+            DataResponse successResponse = new()
+            {
+                Code = StatusCodes.Status200OK,
+                Message = "Success - Withdrawal retrieved",
+                Data = _mapper.Map<WithdrawalDTO>(_withdrawalService.GetWithdrawal(withdrawalId))
+            };
+
+            return successResponse;
+        }
     }
 }

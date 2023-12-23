@@ -5,8 +5,7 @@ namespace BankOfMikaila.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public  ApplicationDbContext (DbContextOptions<ApplicationDbContext> options)
-            :base(options)
+        public  ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -15,6 +14,9 @@ namespace BankOfMikaila.Data
         public DbSet<Bill> Bill { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Withdrawal> Withdrawal { get; set; }
+        public DbSet<Deposit> Deposit { get; set; }
+        public DbSet<P2P> P2P { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().HasData(
@@ -58,14 +60,12 @@ namespace BankOfMikaila.Data
                 .OnDelete(DeleteBehavior.NoAction); // Adjust cascade behavior as needed
 
             modelBuilder.Entity<Transaction>()
-                .HasDiscriminator<string>("Discriminator")
+                .HasDiscriminator<string>("TransactionType")
                 .HasValue<Deposit>("Deposit")
                 .HasValue<Withdrawal>("Withdrawal")
-                .HasValue<P2P>
-                .HasOne(p => p.Account2)
-                .WithMany()
-                .HasForeignKey(p => p.Account2_Id)
-                .OnDelete(DeleteBehavior.NoAction); // Adjust cascade behavior as needed
+                .HasValue<P2P>("P2P");
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
