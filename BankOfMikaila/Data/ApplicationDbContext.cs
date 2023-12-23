@@ -58,6 +58,10 @@ namespace BankOfMikaila.Data
                 .OnDelete(DeleteBehavior.NoAction); // Adjust cascade behavior as needed
 
             modelBuilder.Entity<Transaction>()
+                .HasDiscriminator<string>("Discriminator")
+                .HasValue<Deposit>("Deposit")
+                .HasValue<Withdrawal>("Withdrawal")
+                .HasValue<P2P>
                 .HasOne(p => p.Account2)
                 .WithMany()
                 .HasForeignKey(p => p.Account2_Id)

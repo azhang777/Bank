@@ -1,6 +1,9 @@
-﻿namespace BankOfMikaila.Repository.IRepository
+﻿using BankOfMikaila.Models;
+
+namespace BankOfMikaila.Repository.IRepository
 {
-    public class ITransactionRepository
+    public interface ITransactionRepository : IRepository<Transaction>
     {
+        void Update(Transaction transaction);
     }
 }

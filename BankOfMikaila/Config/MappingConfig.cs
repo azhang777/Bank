@@ -6,7 +6,7 @@ using BankOfMikaila.Models.DTO.Update;
 
 namespace BankOfMikaila.Config
 {
-    public class MappingConfig: Profile
+    public class MappingConfig : Profile
     {
         public MappingConfig() { 
             CreateMap<Customer, CustomerDTO>().ReverseMap();

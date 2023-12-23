@@ -4,10 +4,10 @@ using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Repository
 {
-    public class AccountRepository: Repository<Account>, IAccountRepository
+    public class AccountRepository : Repository<Account>, IAccountRepository
     {
         private readonly ApplicationDbContext _db;
-        public AccountRepository(ApplicationDbContext db): base(db)
+        public AccountRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }

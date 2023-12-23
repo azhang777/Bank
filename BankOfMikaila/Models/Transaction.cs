@@ -23,10 +23,8 @@ namespace BankOfMikaila.Models
         [ForeignKey("Account1_Id")]
         public long Account1_Id { get; set; }
         public virtual Account Account1 { get; set; }
-        [ForeignKey("Account2_Id")]
-        public long Account2_Id { get; set; }
-        public virtual Account Account2 { get; set;}
-
+        [Required]
+        public string Discriminator { get; set; }
         public Transaction()
         {
             TransactionDate = DateTime.Now;

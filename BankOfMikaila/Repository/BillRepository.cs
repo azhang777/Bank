@@ -8,7 +8,7 @@ namespace BankOfMikaila.Repository
     {
         private readonly ApplicationDbContext _db;
 
-        public BillRepository(ApplicationDbContext db): base(db) 
+        public BillRepository(ApplicationDbContext db) : base(db) 
         {
             _db = db;
         }
