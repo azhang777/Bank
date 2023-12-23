@@ -1,4 +1,5 @@
 ﻿using BankOfMikaila.Models;
+using BankOfMikaila.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankOfMikaila.Data

@@ -10,7 +10,7 @@ namespace BankOfMikaila.Models.DTO
         public TransactionStatus TransactionStatus { get; set; }
         public TransactionMedium TransactionMedium { get; set; }
         public double Amount { get; set; }
+        public string Description { get; set; }
         public long Account1_Id { get; set; }
-        public long Account2_Id { get; set; }
     }
 }

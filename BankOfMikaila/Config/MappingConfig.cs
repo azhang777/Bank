@@ -26,6 +26,18 @@ namespace BankOfMikaila.Config
             CreateMap<Transaction, TransactionDTO>().ReverseMap();
             CreateMap<Transaction, TransactionCreateDTO>().ReverseMap();
             CreateMap<Transaction, TransactionUpdateDTO>().ReverseMap();
+
+            CreateMap<Withdrawal, WithdrawalDTO>().ReverseMap();
+            CreateMap<Withdrawal, WithdrawalCreateDTO>().ReverseMap();
+            CreateMap<Withdrawal, WithdrawalUpdateDTO>().ReverseMap();
+
+            CreateMap<Deposit, DepositDTO>().ReverseMap();
+            CreateMap<Deposit, DepositCreateDTO>().ReverseMap();
+            CreateMap<Deposit, DepositUpdateDTO>().ReverseMap();
+
+            CreateMap<P2P, P2PDTO>().ReverseMap();
+            CreateMap<P2P, P2PCreateDTO>().ReverseMap();
+            CreateMap<P2P, P2PUpdateDTO>().ReverseMap();
         }
     }
 }
