@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BankOfMikaila.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class BillController : ControllerBase
     {
         private readonly BillResponse _billResponse;
@@ -47,7 +47,7 @@ namespace BankOfMikaila.Controllers
             }
         }
 
-        [HttpGet("{billId}", Name = "GetBill")]
+        [HttpGet("bills/{billId}", Name = "GetBill")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -113,7 +113,7 @@ namespace BankOfMikaila.Controllers
             }
         }
 
-        [HttpPut("{billId}")]
+        [HttpPut("bills/{billId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -136,7 +136,7 @@ namespace BankOfMikaila.Controllers
             }
         }
 
-        [HttpDelete("{billId}")]
+        [HttpDelete("bills/{billId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
