@@ -72,6 +72,9 @@ namespace BankOfMikaila.Services
             //if only in pending state
             existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
             originalAccount.Balance += existingWithdrawal.Amount;
+
+            _withdrawalRepository.Save();
+            _accountRepository.Save();
         }
     }
 }

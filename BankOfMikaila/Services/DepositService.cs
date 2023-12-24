@@ -63,7 +63,7 @@ namespace BankOfMikaila.Services
 
         //can not delete a deposit, but we can cancel a deposit...
 
-        public void CancelDeposit(long depositId)
+        public void CancelDeposit(long depositId) //may change to bool
         {
             var existingDeposit = GetDeposit(depositId);
             var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
@@ -71,6 +71,10 @@ namespace BankOfMikaila.Services
             //if only in pending state
             existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
             originalAccount.Balance -= existingDeposit.Amount;
+            
+            
+            _depositRepository.Save(); //forgot to changes to database... thats why the endpoint did not work
+            _accountRepository.Save();
         }
         
     }

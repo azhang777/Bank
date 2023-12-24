@@ -95,7 +95,7 @@ namespace BankOfMikaila.Controllers
             {
                 return _accountResponse.UpdateAccount(accountId, accountUpdateDTO);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorResponse errorResponse = new()
                 {

@@ -68,7 +68,7 @@ namespace BankOfMikaila.Response
             _depositService.CancelDeposit(depositId);
             DataResponse successResponse = new()
             {
-                Code = StatusCodes.Status200OK, //are we canceling or deleting? 200,202,204?
+                Code = StatusCodes.Status204NoContent, //are we canceling or deleting? 200,202,204?
                 Message = "Success - Deposit canceled"
             };
 

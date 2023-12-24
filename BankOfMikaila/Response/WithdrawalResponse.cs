@@ -73,7 +73,7 @@ namespace BankOfMikaila.Response
             _withdrawalService.CancelWithdrawal(withdrawalId);
             DataResponse successResponse = new()
             {
-                Code = StatusCodes.Status200OK,
+                Code = StatusCodes.Status204NoContent,
                 Message = "Success - Withdrawal canceled"
             };
 

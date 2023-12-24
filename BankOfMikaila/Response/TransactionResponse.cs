@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO;
 using BankOfMikaila.Response.Format;
 using BankOfMikaila.Services;
 
@@ -22,7 +22,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - All transactions retrieved",
-                Data = _mapper.Map<IEnumerable<Transaction>>(_transactionService.GetAllTransactions())
+                Data = _mapper.Map<IEnumerable<TransactionDTO>>(_transactionService.GetAllTransactions())
             };
 
             return successResponse;

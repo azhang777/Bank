@@ -35,7 +35,7 @@ namespace BankOfMikaila.Controllers
 
                 return CreatedAtRoute("GetWithdrawal", new {withdrawalId = withdrawal.Id}, successResponse);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorResponse errorResponse = new()
                 {
@@ -56,6 +56,74 @@ namespace BankOfMikaila.Controllers
             try
             {
                 return _withdrawalResponse.GetWithdrawal(withdrawalId);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpGet("accounts/{accountId}/withdrawals", Name = "GetWithdrawalsByAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetWithdrawalsByAccount(long accountId)
+        {
+            try
+            {
+                return _withdrawalResponse.GetWithdrawalsByAccount(accountId);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpPut("withdrawals/{withdrawalId}", Name = "UpdateWithdrawal")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> UpdateWithdrawal(long withdrawalId, [FromBody] WithdrawalUpdateDTO withdrawalUpdateDTO)
+        {
+            try
+            {
+                return _withdrawalResponse.UpdateWithdrawal(withdrawalId, withdrawalUpdateDTO);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpDelete("withdrawals/{withdrawalId}", Name = "CancelWithdrawal")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CancelWithdrawal(long withdrawalId)
+        {
+            try
+            {
+                _withdrawalResponse.CancelWithdrawal(withdrawalId);
+                return NoContent();
             }
             catch (Exception ex)
             {

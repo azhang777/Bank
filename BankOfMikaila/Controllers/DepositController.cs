@@ -68,5 +68,73 @@ namespace BankOfMikaila.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
+
+        [HttpGet("accounts/{accountId}/deposits", Name = "GetDepositsByAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetDepositsByAccount(long accountId)
+        {
+            try
+            {
+                return _depositResponse.GetDepositsByAccount(accountId);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpPut("deposits/{depositId}", Name = "UpdateDeposit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> UpdateDeposit(long depositId, [FromBody] DepositUpdateDTO depositUpdateDTO)
+        {
+            try
+            {
+                return _depositResponse.UpdateDeposit(depositId, depositUpdateDTO);
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpDelete("deposits/{depositId}", Name = "CancelDeposit")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CancelWithdrawal(long depositId)
+        {
+            try
+            {
+                _depositResponse.CancelDeposit(depositId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                ErrorResponse errorResponse = new()
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
     }
 }
