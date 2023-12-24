@@ -19,6 +19,7 @@ namespace BankOfMikaila.Controllers
         [HttpPost("accounts/{accountId}/deposits")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateDeposit(long accountId, [FromBody] DepositCreateDTO depositCreateDTO)
         {   
@@ -47,7 +48,7 @@ namespace BankOfMikaila.Controllers
         }
 
         [HttpGet("deposits/{depositId}", Name = "GetDeposit")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetWithdrawal(long depositId)

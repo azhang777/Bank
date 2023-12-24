@@ -147,7 +147,7 @@ namespace BankOfMikaila.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Bill");
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.Customer", b =>
@@ -206,18 +206,16 @@ namespace BankOfMikaila.Migrations
                     b.Property<int>("TransactionStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Account1_Id");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transactions");
 
-                    b.HasDiscriminator<string>("TransactionType").HasValue("Transaction");
+                    b.HasDiscriminator<int>("TransactionType").HasValue(0);
 
                     b.UseTphMappingStrategy();
                 });
@@ -226,29 +224,26 @@ namespace BankOfMikaila.Migrations
                 {
                     b.HasBaseType("BankOfMikaila.Models.Transaction");
 
-                    b.HasDiscriminator().HasValue("Deposit");
+                    b.HasDiscriminator().HasValue(2);
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.P2P", b =>
                 {
                     b.HasBaseType("BankOfMikaila.Models.Transaction");
 
-                    b.Property<long>("Account2Id")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("Account2_Id")
                         .HasColumnType("bigint");
 
-                    b.HasIndex("Account2Id");
+                    b.HasIndex("Account2_Id");
 
-                    b.HasDiscriminator().HasValue("P2P");
+                    b.HasDiscriminator().HasValue(3);
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.Withdrawal", b =>
                 {
                     b.HasBaseType("BankOfMikaila.Models.Transaction");
 
-                    b.HasDiscriminator().HasValue("Withdrawal");
+                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.Account", b =>
@@ -299,8 +294,8 @@ namespace BankOfMikaila.Migrations
                 {
                     b.HasOne("BankOfMikaila.Models.Account", "Account2")
                         .WithMany()
-                        .HasForeignKey("Account2Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Account2_Id")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account2");

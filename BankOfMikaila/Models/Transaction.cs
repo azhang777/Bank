@@ -6,11 +6,12 @@ namespace BankOfMikaila.Models
 {
     public class Transaction
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         [Required]
-        public string TransactionType { get; set; }
+        public TransactionType TransactionType { get; set; }
         public DateTime TransactionDate { get; set; }
         [Required]
         public TransactionStatus TransactionStatus { get; set; }

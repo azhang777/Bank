@@ -1,8 +1,12 @@
-﻿namespace BankOfMikaila.Models.Enum
+﻿using System.Runtime.Serialization;
+
+namespace BankOfMikaila.Models.Enum
 {
     public enum TransactionMedium
     {
-        BALANCE,
-        REWARDS
+        [EnumMember(Value = "BALANCE")]
+        BALANCE = 1,
+        [EnumMember(Value = "REWARDS")]
+        REWARDS = 2
     }
 }

@@ -12,11 +12,11 @@ namespace BankOfMikaila.Data
         }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Bill> Bill { get; set; }
+        public DbSet<Bill> Bills { get; set; }
         public DbSet<Address> Address { get; set; }
-        public DbSet<Transaction> Transaction { get; set; }
-        public DbSet<Withdrawal> Withdrawal { get; set; }
-        public DbSet<Deposit> Deposit { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Withdrawal> Withdrawals { get; set; }
+        public DbSet<Deposit> Deposits { get; set; }
         public DbSet<P2P> P2P { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,11 +60,18 @@ namespace BankOfMikaila.Data
                 .HasForeignKey(p => p.Account1_Id)
                 .OnDelete(DeleteBehavior.NoAction); // Adjust cascade behavior as needed
 
+            modelBuilder.Entity<P2P>()
+                .HasOne(p => p.Account2)
+                .WithMany()
+                .HasForeignKey(p => p.Account2_Id)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Transaction>()
-                .HasDiscriminator<string>("TransactionType")
-                .HasValue<Deposit>("Deposit")
-                .HasValue<Withdrawal>("Withdrawal")
-                .HasValue<P2P>("P2P");
+                .HasDiscriminator(t => t.TransactionType)
+                .HasValue<Deposit>(TransactionType.DEPOSIT)
+                .HasValue<Withdrawal>(TransactionType.WITHDRAWAL)
+                .HasValue<P2P>(TransactionType.P2P)
+                .HasValue<Transaction>(TransactionType.DEFAULT);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BankOfMikaila.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRelationship : Migration
+    public partial class NewDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,7 +73,7 @@ namespace BankOfMikaila.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bill",
+                name: "Bills",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -90,9 +90,9 @@ namespace BankOfMikaila.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bill", x => x.Id);
+                    table.PrimaryKey("PK_Bills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bill_Accounts_AccountId",
+                        name: "FK_Bills_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
@@ -100,30 +100,30 @@ namespace BankOfMikaila.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
+                name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionType = table.Column<int>(type: "int", nullable: false),
+                    TransactionType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TransactionStatus = table.Column<int>(type: "int", nullable: false),
                     TransactionMedium = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Account1_Id = table.Column<long>(type: "bigint", nullable: false),
-                    Account2_Id = table.Column<long>(type: "bigint", nullable: false)
+                    Account2_Id = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.Id);
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transaction_Accounts_Account1_Id",
+                        name: "FK_Transactions_Accounts_Account1_Id",
                         column: x => x.Account1_Id,
                         principalTable: "Accounts",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Transaction_Accounts_Account2_Id",
+                        name: "FK_Transactions_Accounts_Account2_Id",
                         column: x => x.Account2_Id,
                         principalTable: "Accounts",
                         principalColumn: "Id");
@@ -150,18 +150,18 @@ namespace BankOfMikaila.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bill_AccountId",
-                table: "Bill",
+                name: "IX_Bills_AccountId",
+                table: "Bills",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_Account1_Id",
-                table: "Transaction",
+                name: "IX_Transactions_Account1_Id",
+                table: "Transactions",
                 column: "Account1_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_Account2_Id",
-                table: "Transaction",
+                name: "IX_Transactions_Account2_Id",
+                table: "Transactions",
                 column: "Account2_Id");
         }
 
@@ -172,10 +172,10 @@ namespace BankOfMikaila.Migrations
                 name: "Address");
 
             migrationBuilder.DropTable(
-                name: "Bill");
+                name: "Bills");
 
             migrationBuilder.DropTable(
-                name: "Transaction");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Accounts");
