@@ -62,7 +62,7 @@ namespace BankOfMikaila.Response
             {
                 Code = StatusCodes.Status200OK,
                 Message = "Success - All accounts for customer retrieved",
-                Data = _mapper.Map< IEnumerable<AccountDTO>>(_accountService.GetAccountsByCustomer(customerId))
+                Data = _mapper.Map<IEnumerable<AccountDTO>>(_accountService.GetAccountsByCustomer(customerId))
             };
 
             return successResponse;

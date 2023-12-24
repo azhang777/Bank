@@ -72,7 +72,7 @@ namespace BankOfMikaila.Response
 
         public DataResponse UpdateCustomer(long customerId, CustomerUpdateDTO customerUpdateDTO)
         {
-            Customer updatedCustomer = _mapper.Map< Customer>(customerUpdateDTO);
+            Customer updatedCustomer = _mapper.Map<Customer>(customerUpdateDTO);
             _customerService.UpdateCustomer(customerId, updatedCustomer);
             DataResponse successResponse = new()
             {

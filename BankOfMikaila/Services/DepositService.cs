@@ -63,7 +63,7 @@ namespace BankOfMikaila.Services
 
         //can not delete a deposit, but we can cancel a deposit...
 
-        public void cancelDeposit(long depositId)
+        public void CancelDeposit(long depositId)
         {
             var existingDeposit = GetDeposit(depositId);
             var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
