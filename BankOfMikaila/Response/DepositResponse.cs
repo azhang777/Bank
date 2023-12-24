@@ -21,8 +21,8 @@ namespace BankOfMikaila.Response
         public DepositDTO CreateDeposit(long accountId, DepositCreateDTO depositCreateDTO)
         {
             var deposit = _mapper.Map<Deposit>(depositCreateDTO);
-
             var result = _mapper.Map<DepositDTO>(_depositService.CreateDeposit(accountId, deposit));
+
             return result;
         }
 
@@ -54,6 +54,7 @@ namespace BankOfMikaila.Response
         {
             var updatedDeposit = _mapper.Map<Deposit>(depositUpdateDTO);
             _depositService.UpdateDeposit(depositId, updatedDeposit);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,
@@ -66,6 +67,7 @@ namespace BankOfMikaila.Response
         public DataResponse CancelDeposit(long depositId)
         {
             _depositService.CancelDeposit(depositId);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status204NoContent, //are we canceling or deleting? 200,202,204?

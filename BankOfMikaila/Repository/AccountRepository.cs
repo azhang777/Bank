@@ -7,6 +7,7 @@ namespace BankOfMikaila.Repository
     public class AccountRepository : Repository<Account>, IAccountRepository
     {
         private readonly ApplicationDbContext _db;
+
         public AccountRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;

@@ -67,6 +67,7 @@ namespace BankOfMikaila.Response
         {
             var updatedBill = _mapper.Map<Bill>(billUpdateDTO);
             _billService.UpdateBill(billId, updatedBill);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,
@@ -79,6 +80,7 @@ namespace BankOfMikaila.Response
         public DataResponse DeleteBill(long billId)
         {
             _billService.DeleteBill(billId);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status204NoContent,

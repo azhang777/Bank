@@ -26,6 +26,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 var withdrawal = _withdrawalResponse.CreateWithdrawal(accountId, withdrawalCreateDTO);
+                
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,
@@ -123,6 +124,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 _withdrawalResponse.CancelWithdrawal(withdrawalId);
+                
                 return NoContent();
             }
             catch (Exception ex)

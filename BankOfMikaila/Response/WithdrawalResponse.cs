@@ -21,13 +21,8 @@ namespace BankOfMikaila.Response
         public WithdrawalDTO CreateWithdrawal(long accountId, WithdrawalCreateDTO withdrawalCreateDTO)
         {
             var withdrawal = _mapper.Map<Withdrawal>(withdrawalCreateDTO);
-            //DataResponse successResponse = new()
-            //{
-            //    Code = StatusCodes.Status201Created,
-            //    Message = "Success - Withdrawal created",
-            //    Data = _mapper.Map<WithdrawalDTO>(_withdrawalService.CreateWithdrawal)
-            //};
             var result = _mapper.Map<WithdrawalDTO>(_withdrawalService.CreateWithdrawal(accountId, withdrawal));
+
             return result;
         }
 
@@ -59,6 +54,7 @@ namespace BankOfMikaila.Response
         {
             var updatedWithdrawal = _mapper.Map<Withdrawal>(withdrawalUpdateDTO);
             _withdrawalService.UpdateWithdrawal(withdrawalId, updatedWithdrawal);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,
@@ -71,6 +67,7 @@ namespace BankOfMikaila.Response
         public DataResponse CancelWithdrawal(long withdrawalId)
         {
             _withdrawalService.CancelWithdrawal(withdrawalId);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status204NoContent,

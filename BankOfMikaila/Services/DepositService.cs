@@ -19,8 +19,8 @@ namespace BankOfMikaila.Services
             //check if account exists
             var account = _accountRepository.Get(accountId);
             //add account balance with deposit amount
-            deposit.Account1 = account;
-            deposit.Account1_Id = accountId;
+            deposit.Owner = account;
+            deposit.OwnerId = accountId;
             account.Balance += deposit.Amount;
             //add deposit to the transactions database.
             _depositRepository.Create(deposit);
@@ -37,13 +37,13 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<Deposit> GetDepositsByAccount(long accountId)
         {
-            return _depositRepository.GetAllFiltered(deposit => deposit.Account1_Id == accountId);
+            return _depositRepository.GetAllFiltered(deposit => deposit.OwnerId == accountId);
         }
 
         public Deposit UpdateDeposit(long depositId, Deposit updatedDeposit)
         {
             var existingDeposit = GetDeposit(depositId);
-            var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
+            var originalAccount = _accountRepository.Get(existingDeposit.OwnerId);
             var originalAmount = existingDeposit.Amount;
 
             existingDeposit.TransactionType = updatedDeposit.TransactionType;
@@ -66,7 +66,7 @@ namespace BankOfMikaila.Services
         public void CancelDeposit(long depositId) //may change to bool
         {
             var existingDeposit = GetDeposit(depositId);
-            var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
+            var originalAccount = _accountRepository.Get(existingDeposit.OwnerId);
 
             //if only in pending state
             existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;

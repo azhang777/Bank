@@ -116,6 +116,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 _accountResponse.DeleteAccount(accountId);
+                
                 return NoContent();
             }
             catch (Exception ex)

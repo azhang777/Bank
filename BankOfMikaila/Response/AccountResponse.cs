@@ -22,13 +22,8 @@ namespace BankOfMikaila.Response
         public AccountDTO CreateAccount(long customerId, AccountCreateDTO accountCreateDTO)
         {
             var newAccount = _mapper.Map<Account>(accountCreateDTO);
-            //DataResponse successResponse = new()
-            //{
-            //    Code = StatusCodes.Status201Created,
-            //    Message = "Success - Account created",
-            //    Data = _accountService.CreateAccount(customerId, newAccount)
-            //};
             var result = _mapper.Map<AccountDTO>(_accountService.CreateAccount(customerId, newAccount));
+
             return result;
         }
 
@@ -72,6 +67,7 @@ namespace BankOfMikaila.Response
         {
             var updatedAccount = _mapper.Map<Account>(accountUpdateDTO);
             _accountService.UpdateAccount(accountId, updatedAccount);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,
@@ -84,6 +80,7 @@ namespace BankOfMikaila.Response
         public DataResponse DeleteAccount(long accountId)
         {
             _accountService.DeleteAccount(accountId);
+            
             DataResponse successResponse = new() //this is not really used, but ill keep it here
             {
                 Code = StatusCodes.Status204NoContent,

@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankOfMikaila.Models
 {
     public class P2P : Transaction
     {
-        [ForeignKey("Account2_Id")]
-        public long Account2_Id { get; set; }
-        public virtual Account Account2 { get; set; }
+        [Required]
+        [ForeignKey("ReceiverId")]
+        public long ReceiverId { get; set; }
+        public virtual Account Receiver { get; set; }
     }
 }

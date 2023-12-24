@@ -35,6 +35,7 @@ namespace BankOfMikaila.Controllers
             {
 
                 var customer = _customerResponse.CreateCustomer(customerCreateDTO);
+                
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,
@@ -132,6 +133,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
+                
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,

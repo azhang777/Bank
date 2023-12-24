@@ -26,6 +26,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 var bill = _billResponse.CreateBill(accountId, billCreateDTO);
+                
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,
@@ -145,6 +146,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 _billResponse.DeleteBill(billId);
+                
                 return NoContent();
             }
             catch (Exception ex)

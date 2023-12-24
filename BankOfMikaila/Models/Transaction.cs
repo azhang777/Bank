@@ -21,9 +21,9 @@ namespace BankOfMikaila.Models
         public double Amount { get; set; }
         [Required]
         public string Description { get; set; }
-        [ForeignKey("Account1_Id")]
-        public long Account1_Id { get; set; }
-        public virtual Account Account1 { get; set; }
+        [ForeignKey("OwnerId")]
+        public long OwnerId { get; set; }
+        public virtual Account Owner { get; set; }
 
         public Transaction()
         {

@@ -20,8 +20,8 @@ namespace BankOfMikaila.Services
             //check if account exists
             var account = _accountRepository.Get(accountId);
             //add account balance with withdrawal amount
-            withdrawal.Account1 = account;
-            withdrawal.Account1_Id = accountId;
+            withdrawal.Owner = account;
+            withdrawal.OwnerId = accountId;
             account.Balance -= withdrawal.Amount;
             //add withdrawal to the transactions database.
             _withdrawalRepository.Create(withdrawal);
@@ -38,13 +38,13 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<Withdrawal> GetWithdrawalsByAccount(long accountId)
         {
-            return _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.Account1_Id == accountId); ;
+            return _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.OwnerId == accountId); ;
         }
 
         public Withdrawal UpdateWithdrawal(long withdrawalId, Withdrawal updatedWithdrawal)
         {
             var existingWithdrawal = GetWithdrawal(withdrawalId);
-            var originalAccount = _accountRepository.Get(existingWithdrawal.Account1_Id);
+            var originalAccount = _accountRepository.Get(existingWithdrawal.OwnerId);
             var originalAmount = existingWithdrawal.Amount;
 
             existingWithdrawal.TransactionType = updatedWithdrawal.TransactionType;
@@ -67,7 +67,7 @@ namespace BankOfMikaila.Services
         public void CancelWithdrawal(long withdrawalId)
         {
             var existingWithdrawal = GetWithdrawal(withdrawalId);
-            var originalAccount = _accountRepository.Get(existingWithdrawal.Account1_Id);
+            var originalAccount = _accountRepository.Get(existingWithdrawal.OwnerId);
 
             //if only in pending state
             existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;

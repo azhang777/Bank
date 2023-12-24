@@ -24,12 +24,6 @@ namespace BankOfMikaila.Response
         public Customer CreateCustomer(CustomerCreateDTO customerCreateDTO)
         {
             Customer newCustomer = _mapper.Map<Customer>(customerCreateDTO);
-            //DataResponse successResponse = new()
-            //{
-            //    Code = StatusCodes.Status201Created,
-            //    Message = "Success - Customer created",
-            //    Data = _customerService.CreateCustomer(newCustomer)
-            //};
 
             return _customerService.CreateCustomer(newCustomer);
         }
@@ -74,6 +68,7 @@ namespace BankOfMikaila.Response
         {
             Customer updatedCustomer = _mapper.Map<Customer>(customerUpdateDTO);
             _customerService.UpdateCustomer(customerId, updatedCustomer);
+            
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status200OK,

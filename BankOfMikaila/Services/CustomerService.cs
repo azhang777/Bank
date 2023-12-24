@@ -23,6 +23,7 @@ namespace BankOfMikaila.Services
         {
             _customerRepository.Create(customer);
             _customerRepository.Save();
+
             return customer;
         }
 
@@ -61,6 +62,7 @@ namespace BankOfMikaila.Services
 
             _customerRepository.Update(existingCustomer);
             _customerRepository.Save();
+
             return existingCustomer;
         }
 
@@ -77,6 +79,7 @@ namespace BankOfMikaila.Services
         {
             long customerId = _accountRepository.Get(accountId).CustomerId; //works? if we get accountId 5 we get customerId1, but the object is null
             var customer = _customerRepository.Get(customerId, customer => customer.Address);
+
             return customer;
         }
         //GetAllCustomerAccounts in account service

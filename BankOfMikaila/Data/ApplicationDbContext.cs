@@ -55,15 +55,15 @@ namespace BankOfMikaila.Data
                 .HasForeignKey(account => account.CustomerId);
 
             modelBuilder.Entity<Transaction>()
-                .HasOne(p => p.Account1)
+                .HasOne(p => p.Owner)
                 .WithMany()
-                .HasForeignKey(p => p.Account1_Id)
+                .HasForeignKey(p => p.OwnerId)
                 .OnDelete(DeleteBehavior.NoAction); // Adjust cascade behavior as needed
 
             modelBuilder.Entity<P2P>()
-                .HasOne(p => p.Account2)
+                .HasOne(p => p.Receiver)
                 .WithMany()
-                .HasForeignKey(p => p.Account2_Id)
+                .HasForeignKey(p => p.ReceiverId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Transaction>()

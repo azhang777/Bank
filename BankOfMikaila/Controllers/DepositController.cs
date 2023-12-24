@@ -26,6 +26,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 var deposit = _depositResponse.CreateDeposit(accountId, depositCreateDTO);
+                
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,
@@ -123,6 +124,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 _depositResponse.CancelDeposit(depositId);
+                
                 return NoContent();
             }
             catch (Exception ex)
