@@ -2,6 +2,5 @@
 {
     public class P2PUpdateDTO : TransactionUpdateDTO
     {
-        public long Account2_Id {  get; set; }
     }
 }

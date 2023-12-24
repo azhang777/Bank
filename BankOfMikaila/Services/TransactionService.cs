@@ -14,7 +14,10 @@ namespace BankOfMikaila.Services
             _accountRepository = accountRepository;
         }
 
-
+        public IEnumerable<Transaction> GetAllTransactions()
+        {
+            return _transactionRepository.GetAll();
+        }
 
     }
 }

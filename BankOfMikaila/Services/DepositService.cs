@@ -34,5 +34,44 @@ namespace BankOfMikaila.Services
         {
             return _depositRepository.Get(depositId);
         }
+
+        public IEnumerable<Deposit> GetDepositsByAccount(long accountId)
+        {
+            return _depositRepository.GetAllFiltered(deposit => deposit.Account1_Id == accountId);
+        }
+
+        public Deposit UpdateDeposit(long depositId, Deposit updatedDeposit)
+        {
+            var existingDeposit = GetDeposit(depositId);
+            var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
+            var originalAmount = existingDeposit.Amount;
+
+            existingDeposit.TransactionType = updatedDeposit.TransactionType;
+            existingDeposit.TransactionDate = updatedDeposit.TransactionDate;
+            existingDeposit.TransactionStatus = updatedDeposit.TransactionStatus;
+            existingDeposit.Amount = updatedDeposit.Amount;
+            existingDeposit.Description = updatedDeposit.Description;
+
+            originalAccount.Balance += (updatedDeposit.Amount - originalAmount);
+
+            _depositRepository.Update(existingDeposit);
+            _depositRepository.Save();
+            _accountRepository.Save();
+
+            return updatedDeposit;
+        }
+
+        //can not delete a deposit, but we can cancel a deposit...
+
+        public void cancelDeposit(long depositId)
+        {
+            var existingDeposit = GetDeposit(depositId);
+            var originalAccount = _accountRepository.Get(existingDeposit.Account1_Id);
+
+            //if only in pending state
+            existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
+            originalAccount.Balance -= existingDeposit.Amount;
+        }
+        
     }
 }
