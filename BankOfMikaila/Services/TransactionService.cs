@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -16,7 +17,14 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<Transaction> GetAllTransactions()
         {
-            return _transactionRepository.GetAll();
+            var transactions = _transactionRepository.GetAll();
+
+            if (transactions.Count == 0)
+            {
+                throw new TransactionNotFoundException("No transactions found");
+            }
+
+            return transactions;
         }
 
     }

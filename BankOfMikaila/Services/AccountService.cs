@@ -1,5 +1,7 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
+using System.Net;
 
 namespace BankOfMikaila.Services
 {
@@ -17,7 +19,8 @@ namespace BankOfMikaila.Services
 
         public Account CreateAccount(long customerId, Account newAccount)
         {
-            newAccount.Customer = _customerRepository.Get(customerId, customer => customer.Address);
+            var customer = _customerRepository.Get(customerId, customer => customer.Address) ?? throw new CustomerNotFoundException("Customer " + customerId + " not found");
+            newAccount.Customer = customer;
             _accountRepository.Create(newAccount);
             _accountRepository.Save();
 
@@ -26,22 +29,36 @@ namespace BankOfMikaila.Services
 
         public Account GetAccount(long accountId)
         {
-            return _accountRepository.Get(accountId);
+            return _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found"); ; 
         }
 
         public IEnumerable<Account> GetAllAccounts()
         { 
-            return _accountRepository.GetAll();
+            var accounts = _accountRepository.GetAll();
+            
+            if (accounts.Count == 0)
+            {
+                throw new AccountNotFoundException("No accounts found");
+            }
+
+            return accounts;
         }
 
         public IEnumerable<Account> GetAccountsByCustomer(long customerId)
         {
-            return _accountRepository.GetAllFiltered(account => account.Customer.Id == customerId);
+            var accounts = _accountRepository.GetAllFiltered(account => account.Customer.Id == customerId);
+
+            if (accounts.Count == 0)
+            {
+                throw new AccountNotFoundException("Accounts for " + customerId + " not found");
+            }
+
+            return accounts;
         }
 
         public Account UpdateAccount(long accountId, Account updatedAccount)
         {
-            var existingAccount = _accountRepository.Get(accountId);
+            var existingAccount = GetAccount(accountId); //GetAccount already covers the exception DRY
 
             existingAccount.AccountType = updatedAccount.AccountType;
             existingAccount.NickName = updatedAccount.NickName;
@@ -57,6 +74,7 @@ namespace BankOfMikaila.Services
         public void DeleteAccount(long accountId)
         {
             var accountToDelete = GetAccount(accountId);
+            
             _accountRepository.Remove(accountToDelete);
             _accountRepository.Save();
         }

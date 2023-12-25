@@ -52,7 +52,7 @@ namespace BankOfMikaila.Services
             existingWithdrawal.Amount = updatedWithdrawal.Amount;
             existingWithdrawal.Description = updatedWithdrawal.Description;
 
-            originalAccount.Balance -= (updatedWithdrawal.Amount - originalAmount);
+            originalAccount.Balance -= (updatedWithdrawal.Amount - originalAmount); //throw an exception if transaction error occurs? Withdrawal cannot be done if balance < withdrawal amount
 
             _withdrawalRepository.Update(existingWithdrawal);
             _withdrawalRepository.Save();

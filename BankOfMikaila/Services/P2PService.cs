@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -16,7 +17,7 @@ namespace BankOfMikaila.Services
 
         public P2P CreateP2P(long payerId, P2P p2p)
         {
-            var payerAccount = _accountRepository.Get(payerId);
+            var payerAccount = _accountRepository.Get(payerId) ?? throw new AccountNotFoundException("Account " + payerId + " not found");
             var payeeAccount = _accountRepository.Get(p2p.ReceiverId);
             p2p.AccountId = payerId;
             payerAccount.Balance -= p2p.Amount;
@@ -31,7 +32,7 @@ namespace BankOfMikaila.Services
 
         public P2P GetP2P(long p2pId)
         {
-            return _p2pRepository.Get(p2pId);
+            return _p2pRepository.Get(p2pId) ?? throw new TransactionNotFoundException("P2P of id " + p2pId + " not found");
         }
     }
 }

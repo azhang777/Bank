@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -17,7 +18,7 @@ namespace BankOfMikaila.Services
         public Deposit CreateDeposit(long accountId, Deposit deposit)
         {
             //check if account exists
-            var account = _accountRepository.Get(accountId);
+            var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
             //add account balance with deposit amount
             deposit.Account = account;
             deposit.AccountId = accountId;
@@ -32,18 +33,24 @@ namespace BankOfMikaila.Services
 
         public Deposit GetDeposit(long depositId)
         {
-            return _depositRepository.Get(depositId);
+            return _depositRepository.Get(depositId) ?? throw new TransactionNotFoundException("Deposit " + depositId + " not found" );
         }
 
         public IEnumerable<Deposit> GetDepositsByAccount(long accountId)
         {
-            return _depositRepository.GetAllFiltered(deposit => deposit.AccountId == accountId);
+            var deposits = _depositRepository.GetAllFiltered(deposit => deposit.AccountId == accountId);
+
+            if (deposits.Count == 0)
+            {
+                throw new TransactionNotFoundException("No deposits found"); //MUST CHECK THIS. IF THERE IS WITHDRAWALS AMD P2P, DOES IT AFFECT THE SIZE OF DEPOSIT?
+            }
+            return deposits;
         }
 
         public Deposit UpdateDeposit(long depositId, Deposit updatedDeposit)
         {
             var existingDeposit = GetDeposit(depositId);
-            var originalAccount = _accountRepository.Get(existingDeposit.AccountId);
+            var originalAccount = _accountRepository.Get(existingDeposit.AccountId); /*?? throw new AccountNotFoundException("Account to update is not found"); this is not needed bc if bc deposit exists only if account exists. If deposit exists, the account must exist. */
             var originalAmount = existingDeposit.Amount;
 
             existingDeposit.TransactionType = updatedDeposit.TransactionType;
@@ -52,7 +59,7 @@ namespace BankOfMikaila.Services
             existingDeposit.Amount = updatedDeposit.Amount;
             existingDeposit.Description = updatedDeposit.Description;
 
-            originalAccount.Balance += (updatedDeposit.Amount - originalAmount);
+            originalAccount.Balance += (updatedDeposit.Amount - originalAmount); 
 
             _depositRepository.Update(existingDeposit);
             _depositRepository.Save();
@@ -66,7 +73,7 @@ namespace BankOfMikaila.Services
         public void CancelDeposit(long depositId) //may change to bool
         {
             var existingDeposit = GetDeposit(depositId);
-            var originalAccount = _accountRepository.Get(existingDeposit.AccountId);
+            var originalAccount = _accountRepository.Get(existingDeposit.AccountId); //if deposit exist, account must exist. no need to throw exception here
 
             //if only in pending state
             existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;

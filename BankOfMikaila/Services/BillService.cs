@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 namespace BankOfMikaila.Services
 {
@@ -16,7 +17,7 @@ namespace BankOfMikaila.Services
 
         public Bill CreateBill(long accountId, Bill newBill)
         {
-            newBill.Account = _accountRepository.Get(accountId);
+            newBill.Account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found"); ;
             newBill.AccountId = accountId;
             _billRepository.Create(newBill);
             _billRepository.Save();
@@ -26,22 +27,36 @@ namespace BankOfMikaila.Services
 
         public Bill GetBill(long billId)
         {
-            return _billRepository.Get(billId);
+            return _billRepository.Get(billId) ?? throw new BillNotFoundException("Bill" + billId + " not found");
         }
 
         public IEnumerable<Bill> GetBillsByAccount(long accountId)
         {
-            return _billRepository.GetAllFiltered(bill => bill.AccountId == accountId);
+            var bills = _billRepository.GetAllFiltered(bill => bill.AccountId == accountId);
+
+            if (bills.Count == 0)
+            {
+                throw new BillNotFoundException("No bills found for account " + accountId);
+            }
+
+            return bills; 
         }
 
         public IEnumerable<Bill> GetBillsByCustomer(long customerId)
         {
-            return _billRepository.GetAllFiltered(bill => bill.Account.CustomerId == customerId);
+            var bills = _billRepository.GetAllFiltered(bill => bill.Account.CustomerId == customerId);
+
+            if (bills.Count == 0)
+            {
+                throw new BillNotFoundException("No bills found for customer " + customerId);
+            }
+
+            return bills;
         }
 
         public Bill UpdateBill(long billId, Bill updatedBill)
         {
-            var existingBill = _billRepository.Get(billId);
+            var existingBill = GetBill(billId);
 
             existingBill.TransactionStatus = updatedBill.TransactionStatus;
             existingBill.Payee = updatedBill.Payee;
@@ -60,7 +75,7 @@ namespace BankOfMikaila.Services
 
         public void DeleteBill(long billId)
         {
-            var billToDelete = GetBill(billId);
+            var billToDelete = GetBill(billId); //no need to throw an exception bc the GetBill already covers it
             _billRepository.Remove(billToDelete);
             _billRepository.Save();
         }
