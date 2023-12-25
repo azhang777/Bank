@@ -58,6 +58,21 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+//method 1
+//app.Use(async (context, next) =>
+//{
+//    try
+//    { //every request will be executed inside try catch block statement. The exception thrown during the execution and not handled explicitly will be caught by catch block!
+//        await next(context);
+//    }
+//    catch (Exception ex)
+//    {
+//        //ErrorResponse errorResponse = new() {}
+       
+//        Console.WriteLine(ex);
+//        throw;
+//    }
+//});
 
 app.MapControllers();
 
