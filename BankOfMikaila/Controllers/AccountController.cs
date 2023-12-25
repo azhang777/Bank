@@ -25,20 +25,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAccount(long accountId)
         {
-            try
-            {
-                return _accountResponse.GetAccount(accountId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _accountResponse.GetAccount(accountId);
         }
 
         [HttpGet("{accountId}/customer", Name = "GetCustomerByAccount")]
@@ -47,20 +34,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetCustomerByAccount(long accountId)
         {
-            try
-            {
-                return _customerResponse.GetCustomerByAccount(accountId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _customerResponse.GetCustomerByAccount(accountId);
         }
 
         [HttpGet]
@@ -68,20 +42,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAllAccounts()
         {
-            try
-            {
-                return _accountResponse.GetAllAccounts();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _accountResponse.GetAllAccounts();
         }
 
         [HttpPut("{accountId}", Name = "UpdateAccount")]
@@ -91,20 +52,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> UpdateAccount(long accountId, [FromBody] AccountUpdateDTO accountUpdateDTO)
         {
-            try
-            {
-                return _accountResponse.UpdateAccount(accountId, accountUpdateDTO);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError,errorResponse);
-            }
+            return _accountResponse.UpdateAccount(accountId, accountUpdateDTO);
         }
 
         [HttpDelete("{accountId}", Name = "DeleteAccount")]
@@ -113,22 +61,8 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteAccount(long accountId) 
         {
-            try
-            {
-                _accountResponse.DeleteAccount(accountId);
-                
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            _accountResponse.DeleteAccount(accountId);
+            return NoContent();
         }
     }
 }

@@ -23,29 +23,16 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateP2P(long accountId, [FromBody] P2PCreateDTO p2PCreateDTO)
         {
-            try
+            var p2p = _p2pResponse.CreateP2P(accountId, p2PCreateDTO);
+
+            DataResponse successResponse = new()
             {
-                var p2p = _p2pResponse.CreateP2P(accountId, p2PCreateDTO);
+                Code = StatusCodes.Status201Created,
+                Message = "Success - P2P Created",
+                Data = p2p
+            };
 
-                DataResponse successResponse = new()
-                {
-                    Code = StatusCodes.Status201Created,
-                    Message = "Success - P2P Created",
-                    Data = p2p
-                };
-
-                return CreatedAtRoute("GetP2P", new { p2pId = p2p.Id }, successResponse);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return CreatedAtRoute("GetP2P", new { p2pId = p2p.Id }, successResponse);
         }
 
         [HttpGet("p2p/{p2pId}", Name = "GetP2P")]
@@ -54,20 +41,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetP2P(long p2pId)
         {
-            try
-            {
-                return _p2pResponse.GetP2P(p2pId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _p2pResponse.GetP2P(p2pId);
         }
     }
 }

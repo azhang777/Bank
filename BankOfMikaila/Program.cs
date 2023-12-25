@@ -1,5 +1,6 @@
 using BankOfMikaila.Config;
 using BankOfMikaila.Data;
+using BankOfMikaila.Middleware;
 using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
@@ -58,7 +59,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-//method 1
+//method 1:
 //app.Use(async (context, next) =>
 //{
 //    try
@@ -68,12 +69,14 @@ app.UseAuthorization();
 //    catch (Exception ex)
 //    {
 //        //ErrorResponse errorResponse = new() {}
-       
+
 //        Console.WriteLine(ex);
 //        throw;
 //    }
 //});
 
+//method 2:
+app.UseMiddleware<GlobalExceptionHandling>();
 app.MapControllers();
 
 app.Run();

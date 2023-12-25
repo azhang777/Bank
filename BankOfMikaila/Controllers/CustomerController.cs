@@ -30,31 +30,16 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
         {
+            var customer = _customerResponse.CreateCustomer(customerCreateDTO);
 
-            try
+            DataResponse successResponse = new()
             {
+                Code = StatusCodes.Status201Created,
+                Message = "Success - Customer created",
+                Data = customer
+            };
 
-                var customer = _customerResponse.CreateCustomer(customerCreateDTO);
-                
-                DataResponse successResponse = new()
-                {
-                    Code = StatusCodes.Status201Created,
-                    Message = "Success - Customer created",
-                    Data = customer
-                };
-
-                return CreatedAtRoute("GetCustomer", new { customerId = customer.Id }, successResponse); //new customerId needs to match the argument in GetCustomer customerId, it is not id!
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return CreatedAtRoute("GetCustomer", new { customerId = customer.Id }, successResponse); //new customerId needs to match the argument in GetCustomer customerId, it is not id!
         }
 
         [HttpGet("{customerId}", Name = "GetCustomer")]
@@ -63,20 +48,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetCustomer(long customerId)
         {
-            try
-            {
-                return _customerResponse.GetCustomer(customerId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status100Continue, errorResponse);
-            }
+            return _customerResponse.GetCustomer(customerId);
         }
 
         [HttpGet]
@@ -84,20 +56,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAllCustomers()
         {
-            try
-            {
-                return _customerResponse.GetAllCustomers();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _customerResponse.GetAllCustomers();
         }
 
         [HttpPut("{customerId}", Name = "UpdateCustomer")]
@@ -107,20 +66,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> UpdateCustomer(long customerId, [FromBody] CustomerUpdateDTO customerUpdateDTO)
         {
-            try
-            {
-                return _customerResponse.UpdateCustomer(customerId, customerUpdateDTO);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _customerResponse.UpdateCustomer(customerId, customerUpdateDTO);
         }
 
         [HttpPost("{customerId}/accounts", Name = "CreateAccount")]
@@ -130,29 +76,16 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
         {
-            try
-            {
-                var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
-                
-                DataResponse successResponse = new()
-                {
-                    Code = StatusCodes.Status201Created,
-                    Message = "Success - Account created",
-                    Data = accountDTO
-                };
+            var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
 
-                return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
-            }
-            catch (Exception ex)
+            DataResponse successResponse = new()
             {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
+                Code = StatusCodes.Status201Created,
+                Message = "Success - Account created",
+                Data = accountDTO
+            };
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
         }
 
         [HttpGet("{customerId}/accounts", Name = "GetAccountsByCustomer")]
@@ -161,20 +94,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAccountsByCustomer(long customerId)
         {
-            try
-            {
-                return _accountResponse.GetAccountsByCustomer(customerId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _accountResponse.GetAccountsByCustomer(customerId);
         }
     }
 }

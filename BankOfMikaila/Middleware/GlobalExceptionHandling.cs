@@ -23,14 +23,13 @@ namespace BankOfMikaila.Middleware
                 ErrorResponse errorResponse = new()
                 {
                     Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message,
+                    Message = "poop" + ex.Message,
                 };
 
                 string jsonResponse = JsonSerializer.Serialize(errorResponse);
 
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.ContentType = "application/json";
-
 
                 await context.Response.WriteAsync(jsonResponse);
             }
