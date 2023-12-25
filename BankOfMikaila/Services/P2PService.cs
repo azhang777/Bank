@@ -1,14 +1,14 @@
 ﻿using BankOfMikaila.Models;
-using BankOfMikaila.Repository;
+using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
 {
     public class P2PService
     {
-        private readonly P2PRepository _p2pRepository;
-        private readonly AccountRepository _accountRepository;
+        private readonly IP2PRepository _p2pRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public P2PService(P2PRepository p2pRepository, AccountRepository accountRepository)
+        public P2PService(IP2PRepository p2pRepository, IAccountRepository accountRepository)
         {
             _p2pRepository = p2pRepository;
             _accountRepository = accountRepository;
@@ -18,7 +18,7 @@ namespace BankOfMikaila.Services
         {
             var payerAccount = _accountRepository.Get(payerId);
             var payeeAccount = _accountRepository.Get(p2p.ReceiverId);
-
+            p2p.AccountId = payerId;
             payerAccount.Balance -= p2p.Amount;
             payeeAccount.Balance += p2p.Amount;
 

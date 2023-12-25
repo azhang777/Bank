@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using BankOfMikaila.Models;
-using BankOfMikaila.Models.DTO;
+﻿using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
-using System.Linq.Expressions;
 
 namespace BankOfMikaila.Services
 {

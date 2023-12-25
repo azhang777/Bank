@@ -1,11 +1,5 @@
-﻿using AutoMapper;
-using BankOfMikaila.Models;
-using BankOfMikaila.Models.DTO;
-using BankOfMikaila.Models.DTO.Create;
-using BankOfMikaila.Repository;
+﻿using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
-using Microsoft.Identity.Client;
-
 namespace BankOfMikaila.Services
 {
     public class BillService

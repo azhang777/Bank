@@ -4,6 +4,7 @@ using BankOfMikaila.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankOfMikaila.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225002257_updateColumns")]
+    partial class updateColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,15 +190,15 @@ namespace BankOfMikaila.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("AccountId")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -211,7 +214,7 @@ namespace BankOfMikaila.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Transactions");
 
@@ -281,13 +284,13 @@ namespace BankOfMikaila.Migrations
 
             modelBuilder.Entity("BankOfMikaila.Models.Transaction", b =>
                 {
-                    b.HasOne("BankOfMikaila.Models.Account", "Account")
+                    b.HasOne("BankOfMikaila.Models.Account", "Owner")
                         .WithMany()
-                        .HasForeignKey("AccountId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("BankOfMikaila.Models.P2P", b =>

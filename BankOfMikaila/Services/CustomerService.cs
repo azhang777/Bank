@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using BankOfMikaila.Models;
-using BankOfMikaila.Models.DTO;
-using BankOfMikaila.Models.DTO.Create;
+﻿using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace BankOfMikaila.Services
 {

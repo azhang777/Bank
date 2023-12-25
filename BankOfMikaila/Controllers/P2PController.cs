@@ -1,7 +1,6 @@
 ﻿using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
-using BankOfMikaila.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankOfMikaila.Controllers
@@ -27,7 +26,7 @@ namespace BankOfMikaila.Controllers
             try
             {
                 var p2p = _p2pResponse.CreateP2P(accountId, p2PCreateDTO);
-                
+
                 DataResponse successResponse = new()
                 {
                     Code = StatusCodes.Status201Created,
@@ -35,7 +34,7 @@ namespace BankOfMikaila.Controllers
                     Data = p2p
                 };
 
-                return CreatedAtRoute("GetP2P", new {p2pId = p2p.Id}, successResponse);
+                return CreatedAtRoute("GetP2P", new { p2pId = p2p.Id }, successResponse);
             }
             catch (Exception ex)
             {

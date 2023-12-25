@@ -1,5 +1,4 @@
 ﻿using BankOfMikaila.Models;
-using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -20,8 +19,8 @@ namespace BankOfMikaila.Services
             //check if account exists
             var account = _accountRepository.Get(accountId);
             //add account balance with withdrawal amount
-            withdrawal.Owner = account;
-            withdrawal.OwnerId = accountId;
+            withdrawal.Account = account;
+            withdrawal.AccountId = accountId;
             account.Balance -= withdrawal.Amount;
             //add withdrawal to the transactions database.
             _withdrawalRepository.Create(withdrawal);
@@ -38,13 +37,13 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<Withdrawal> GetWithdrawalsByAccount(long accountId)
         {
-            return _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.OwnerId == accountId); ;
+            return _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.AccountId == accountId); ;
         }
 
         public Withdrawal UpdateWithdrawal(long withdrawalId, Withdrawal updatedWithdrawal)
         {
             var existingWithdrawal = GetWithdrawal(withdrawalId);
-            var originalAccount = _accountRepository.Get(existingWithdrawal.OwnerId);
+            var originalAccount = _accountRepository.Get(existingWithdrawal.AccountId);
             var originalAmount = existingWithdrawal.Amount;
 
             existingWithdrawal.TransactionType = updatedWithdrawal.TransactionType;
@@ -67,7 +66,7 @@ namespace BankOfMikaila.Services
         public void CancelWithdrawal(long withdrawalId)
         {
             var existingWithdrawal = GetWithdrawal(withdrawalId);
-            var originalAccount = _accountRepository.Get(existingWithdrawal.OwnerId);
+            var originalAccount = _accountRepository.Get(existingWithdrawal.AccountId);
 
             //if only in pending state
             existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
