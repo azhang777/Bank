@@ -44,6 +44,7 @@ namespace BankOfMikaila.Services
             {
                 throw new TransactionNotFoundException("No deposits found"); //MUST CHECK THIS. IF THERE IS WITHDRAWALS AMD P2P, DOES IT AFFECT THE SIZE OF DEPOSIT?
             }
+
             return deposits;
         }
 
@@ -76,10 +77,12 @@ namespace BankOfMikaila.Services
             var originalAccount = _accountRepository.Get(existingDeposit.AccountId); //if deposit exist, account must exist. no need to throw exception here
 
             //if only in pending state
-            existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
-            originalAccount.Balance -= existingDeposit.Amount;
-            
-            
+            if (existingDeposit.TransactionStatus == Models.Enum.TransactionStatus.PENDING)
+            {
+                existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
+                originalAccount.Balance -= existingDeposit.Amount;
+            }            
+        
             _depositRepository.Save(); //forgot to changes to database... thats why the endpoint did not work
             _accountRepository.Save();
         }

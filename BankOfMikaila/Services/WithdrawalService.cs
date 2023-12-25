@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -17,7 +18,7 @@ namespace BankOfMikaila.Services
         public Withdrawal CreateWithdrawal(long accountId, Withdrawal withdrawal)
         {
             //check if account exists
-            var account = _accountRepository.Get(accountId);
+            var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
             //add account balance with withdrawal amount
             withdrawal.Account = account;
             withdrawal.AccountId = accountId;
@@ -32,12 +33,19 @@ namespace BankOfMikaila.Services
 
         public Withdrawal GetWithdrawal(long withdrawalId)
         {
-            return _withdrawalRepository.Get(withdrawalId);
+            return _withdrawalRepository.Get(withdrawalId) ?? throw new TransactionNotFoundException("Withdrawal " + withdrawalId + " not found");
         }
 
         public IEnumerable<Withdrawal> GetWithdrawalsByAccount(long accountId)
         {
-            return _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.AccountId == accountId); ;
+            var withdrawals = _withdrawalRepository.GetAllFiltered(withdrawal => withdrawal.AccountId == accountId);
+
+            if (withdrawals.Count == 0)
+            {
+                throw new TransactionNotFoundException("No withdrawals found");
+            }
+
+            return withdrawals;
         }
 
         public Withdrawal UpdateWithdrawal(long withdrawalId, Withdrawal updatedWithdrawal)
@@ -69,8 +77,11 @@ namespace BankOfMikaila.Services
             var originalAccount = _accountRepository.Get(existingWithdrawal.AccountId);
 
             //if only in pending state
-            existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
-            originalAccount.Balance += existingWithdrawal.Amount;
+            if (existingWithdrawal.TransactionStatus == Models.Enum.TransactionStatus.PENDING)
+            {
+                existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
+                originalAccount.Balance += existingWithdrawal.Amount;
+            }
 
             _withdrawalRepository.Save();
             _accountRepository.Save();
