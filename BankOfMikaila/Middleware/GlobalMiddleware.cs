@@ -1,24 +1,30 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Response.Format;
+using Serilog;
+using System.Diagnostics;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankOfMikaila.Middleware
 {
-    public class GlobalExceptionHandling
+    public class GlobalMiddleware //exception handling and logger middleware
     {
         private readonly RequestDelegate _next;
 
-        public GlobalExceptionHandling(RequestDelegate next)
+        public GlobalMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 await _next(context);
+                Log.Information(
+                    "Request {RequestMethod} {RequestPath} processed in {Elapsed:0.0000} ms with status code {StatusCode}",
+                    context.Request.Method, context.Request.Path, stopwatch.Elapsed.TotalMilliseconds, context.Response.StatusCode);
             }
             catch (InvalidTransactionTypeException itte)
             {
@@ -34,6 +40,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    itte, itte.Message, context.Request.Method);
             }
             catch (InvalidAccountTypeException iate)
             {
@@ -49,6 +58,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    iate, iate.Message, context.Request.Method);
             }
             catch (InvalidTransactionStatusException itse)
             {
@@ -64,6 +76,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    itse, itse.Message, context.Request.Method);
             }
             catch (NoFundsAvailableException nfae)
             {
@@ -79,6 +94,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    nfae, nfae.Message, context.Request.Method);
             }
             catch (TransactionNotFoundException tnfe)
             {
@@ -94,6 +112,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    tnfe, tnfe.Message, context.Request.Method);
             }
             catch (CustomerNotFoundException cnfe)
             {
@@ -109,6 +130,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    cnfe, cnfe.Message, context.Request.Method);
             }
             catch (AccountNotFoundException anfe)
             {
@@ -124,6 +148,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    anfe, anfe.Message, context.Request.Method);
             }
             catch (BillNotFoundException bnfe)
             {
@@ -139,6 +166,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    bnfe, bnfe.Message, context.Request.Method);
             }
             catch (CustomException ex)
             {
@@ -154,6 +184,9 @@ namespace BankOfMikaila.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(jsonResponse);
+                Log.Error(
+                    "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
+                    ex, ex.Message, context.Request.Method);
             }
         }
     }

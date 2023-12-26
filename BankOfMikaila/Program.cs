@@ -6,6 +6,7 @@ using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
+//builder.Host.UseSerilog((context, configuration) => 
+//{
+//    configuration.WriteTo.Console().MinimumLevel.Information();
+//}); //hard code serilog configuiration or
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+}); //configure serilog from application settings
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging(); //allows us to log http requests
 
 app.UseHttpsRedirection();
 
@@ -76,7 +89,8 @@ app.UseAuthorization();
 //});
 
 //method 2:
-app.UseMiddleware<GlobalExceptionHandling>();
+app.UseMiddleware<GlobalMiddleware>();
+
 app.MapControllers();
 
 app.Run();
