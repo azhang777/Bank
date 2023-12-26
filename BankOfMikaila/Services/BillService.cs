@@ -27,7 +27,7 @@ namespace BankOfMikaila.Services
 
         public Bill GetBill(long billId)
         {
-            return _billRepository.Get(billId) ?? throw new BillNotFoundException("Bill" + billId + " not found");
+            return _billRepository.Get(billId) ?? throw new BillNotFoundException("Bill " + billId + " not found");
         }
 
         public IEnumerable<Bill> GetBillsByAccount(long accountId)

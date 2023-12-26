@@ -42,7 +42,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    itte, itte.Message, context.Request.Method);
+                    itte.GetType().Name, itte.Message, context.Request.Method);
             }
             catch (InvalidAccountTypeException iate)
             {
@@ -60,7 +60,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    iate, iate.Message, context.Request.Method);
+                    iate.GetType().Name, iate.Message, context.Request.Method);
             }
             catch (InvalidTransactionStatusException itse)
             {
@@ -78,7 +78,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    itse, itse.Message, context.Request.Method);
+                    itse.GetType().Name, itse.Message, context.Request.Method);
             }
             catch (NoFundsAvailableException nfae)
             {
@@ -96,7 +96,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    nfae, nfae.Message, context.Request.Method);
+                    nfae.GetType().Name, nfae.Message, context.Request.Method);
             }
             catch (TransactionNotFoundException tnfe)
             {
@@ -114,7 +114,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    tnfe, tnfe.Message, context.Request.Method);
+                    tnfe.GetType().Name, tnfe.Message, context.Request.Method);
             }
             catch (CustomerNotFoundException cnfe)
             {
@@ -132,7 +132,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    cnfe, cnfe.Message, context.Request.Method);
+                    cnfe.GetType().Name , cnfe.Message, context.Request.Method);
             }
             catch (AccountNotFoundException anfe)
             {
@@ -150,7 +150,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    anfe, anfe.Message, context.Request.Method);
+                     anfe.GetType().Name, anfe.Message, context.Request.Method);
             }
             catch (BillNotFoundException bnfe)
             {
@@ -168,7 +168,7 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    bnfe, bnfe.Message, context.Request.Method);
+                    bnfe.GetType().Name, bnfe.Message, context.Request.Method);
             }
             catch (CustomException ex)
             {
@@ -186,7 +186,11 @@ namespace BankOfMikaila.Middleware
                 await context.Response.WriteAsync(jsonResponse);
                 Log.Error(
                     "An error occurred while processing the request: {Exception} with message {Message} at {RequestMethod}",
-                    ex, ex.Message, context.Request.Method);
+                    ex.GetType().Name, ex.Message, context.Request.Method);
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
     }
