@@ -1,5 +1,6 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.Enum;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -17,6 +18,7 @@ namespace BankOfMikaila.Services
 
         public Deposit CreateDeposit(long accountId, Deposit deposit)
         {
+            VerifyDeposit(deposit);
             //check if account exists
             var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
             //add account balance with deposit amount
@@ -50,6 +52,8 @@ namespace BankOfMikaila.Services
 
         public Deposit UpdateDeposit(long depositId, Deposit updatedDeposit)
         {
+            VerifyDeposit(updatedDeposit);
+
             var existingDeposit = GetDeposit(depositId);
             var originalAccount = _accountRepository.Get(existingDeposit.AccountId); /*?? throw new AccountNotFoundException("Account to update is not found"); this is not needed bc if bc deposit exists only if account exists. If deposit exists, the account must exist. */
             var originalAmount = existingDeposit.Amount;
@@ -77,15 +81,27 @@ namespace BankOfMikaila.Services
             var originalAccount = _accountRepository.Get(existingDeposit.AccountId); //if deposit exist, account must exist. no need to throw exception here
 
             //if only in pending state
-            if (existingDeposit.TransactionStatus == Models.Enum.TransactionStatus.PENDING)
+            if (existingDeposit.TransactionStatus == TransactionStatus.PENDING)
             {
-                existingDeposit.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
+                existingDeposit.TransactionStatus = TransactionStatus.CANCELED;
                 originalAccount.Balance -= existingDeposit.Amount;
-            }            
-        
+            }
+            else
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to cancel deposit " + depositId);
+            }
+
             _depositRepository.Save(); //forgot to changes to database... thats why the endpoint did not work
             _accountRepository.Save();
         }
-        
+
+        private static void VerifyDeposit(Deposit deposit)
+        {
+            if (deposit.TransactionType != TransactionType.DEPOSIT)
+            {
+                throw new InvalidTransactionTypeException("Deposit type is invalid");
+            }
+        }
+
     }
 }

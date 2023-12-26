@@ -7,12 +7,10 @@ namespace BankOfMikaila.Services
     public class TransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IAccountRepository _accountRepository;
 
-        public TransactionService(ITransactionRepository transactionRepository, IAccountRepository accountRepository)
+        public TransactionService(ITransactionRepository transactionRepository)
         {
             _transactionRepository = transactionRepository;
-            _accountRepository = accountRepository;
         }
 
         public IEnumerable<Transaction> GetAllTransactions()
@@ -26,6 +24,7 @@ namespace BankOfMikaila.Services
 
             return transactions;
         }
+
 
     }
 }

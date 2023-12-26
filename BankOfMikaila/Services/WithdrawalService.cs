@@ -1,5 +1,6 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.Enum;
 using BankOfMikaila.Repository.IRepository;
 
 namespace BankOfMikaila.Services
@@ -17,8 +18,14 @@ namespace BankOfMikaila.Services
 
         public Withdrawal CreateWithdrawal(long accountId, Withdrawal withdrawal)
         {
+            VerifyWithdrawal(withdrawal);
             //check if account exists
             var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
+            
+            if (account.Balance < withdrawal.Amount)
+            {
+                throw new NoFundsAvailableException("Account " + accountId + " does not have available funds to make this transaction");
+            }
             //add account balance with withdrawal amount
             withdrawal.Account = account;
             withdrawal.AccountId = accountId;
@@ -50,8 +57,16 @@ namespace BankOfMikaila.Services
 
         public Withdrawal UpdateWithdrawal(long withdrawalId, Withdrawal updatedWithdrawal)
         {
+            VerifyWithdrawal(updatedWithdrawal);
+            
             var existingWithdrawal = GetWithdrawal(withdrawalId);
             var originalAccount = _accountRepository.Get(existingWithdrawal.AccountId);
+
+            if (originalAccount.Balance + existingWithdrawal.Amount < updatedWithdrawal.Amount)
+            {
+                throw new NoFundsAvailableException("Account " + originalAccount.Id + " does not have available funds to make this updated transaction");
+            }
+
             var originalAmount = existingWithdrawal.Amount;
 
             existingWithdrawal.TransactionType = updatedWithdrawal.TransactionType;
@@ -77,14 +92,26 @@ namespace BankOfMikaila.Services
             var originalAccount = _accountRepository.Get(existingWithdrawal.AccountId);
 
             //if only in pending state
-            if (existingWithdrawal.TransactionStatus == Models.Enum.TransactionStatus.PENDING)
+            if (existingWithdrawal.TransactionStatus == TransactionStatus.PENDING)
             {
-                existingWithdrawal.TransactionStatus = Models.Enum.TransactionStatus.CANCELED;
+                existingWithdrawal.TransactionStatus = TransactionStatus.CANCELED;
                 originalAccount.Balance += existingWithdrawal.Amount;
+            }
+            else
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to cancel withdrawal " + withdrawalId);
             }
 
             _withdrawalRepository.Save();
             _accountRepository.Save();
+        }
+
+        private static void VerifyWithdrawal(Withdrawal withdrawal)
+        {
+            if (withdrawal.TransactionType != TransactionType.WITHDRAWAL)
+            {
+                throw new InvalidTransactionTypeException("Withdrawal type is invalid");
+            }
         }
     }
 }
