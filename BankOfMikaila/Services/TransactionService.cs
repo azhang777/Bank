@@ -25,6 +25,5 @@ namespace BankOfMikaila.Services
             return transactions;
         }
 
-
     }
 }

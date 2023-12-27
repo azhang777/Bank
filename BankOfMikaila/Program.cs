@@ -5,6 +5,7 @@ using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Services;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -47,7 +48,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-
+builder.Services.AddHangfire((sp, config) => 
+{
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultSQLConnection");
+    config.UseSqlServerStorage(connectionString);
+});
+builder.Services.AddHangfireServer();
 //builder.Host.UseSerilog((context, configuration) => 
 //{
 //    configuration.WriteTo.Console().MinimumLevel.Information();
@@ -92,5 +98,7 @@ app.UseAuthorization();
 app.UseMiddleware<GlobalMiddleware>();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
 
 app.Run();

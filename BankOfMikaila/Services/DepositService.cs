@@ -2,6 +2,7 @@
 using BankOfMikaila.Models;
 using BankOfMikaila.Models.Enum;
 using BankOfMikaila.Repository.IRepository;
+using Hangfire;
 
 namespace BankOfMikaila.Services
 {
@@ -29,7 +30,7 @@ namespace BankOfMikaila.Services
             _depositRepository.Create(deposit);
             _depositRepository.Save();
             _accountRepository.Save();
-
+            BackgroundJob.Schedule(() => CompleteDeposit(deposit.Id), TimeSpan.FromSeconds(6)); //seems that hangfire serializes job parameters. Need to pass in simple id to get deposit within the method rather than pass in complex object Deposit itself. The method will fail because if we pass a deposit object.
             return deposit;
         }
 
@@ -103,5 +104,19 @@ namespace BankOfMikaila.Services
             }
         }
 
+        public void CompleteDeposit(long depositId)
+        {
+
+            var deposit = GetDeposit(depositId);
+
+            if (deposit.TransactionStatus != TransactionStatus.PENDING)
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to complete deposit "  + deposit.Id);
+            }
+
+            deposit.TransactionStatus = TransactionStatus.COMPLETED;
+
+            _depositRepository.Save();
+        }
     }
 }
