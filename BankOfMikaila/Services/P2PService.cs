@@ -1,6 +1,8 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.Enum;
 using BankOfMikaila.Repository.IRepository;
+using Hangfire;
 
 namespace BankOfMikaila.Services
 {
@@ -29,12 +31,13 @@ namespace BankOfMikaila.Services
             var payeeAccount = _accountRepository.Get(p2p.ReceiverId) ?? throw new AccountNotFoundException("Account " + p2p.ReceiverId + " not found");
 
             p2p.AccountId = payerId;
-            payerAccount.Balance -= p2p.Amount;
-            payeeAccount.Balance += p2p.Amount;
+            p2p.Account = payeeAccount;
+            p2p.Receiver = payerAccount; //from P2PCreateDTO, only receiverId is linked. We need to link the account, account id, and receiver to the p2p object
 
             _p2pRepository.Create(p2p);
             _p2pRepository.Save();
-            _accountRepository.Save();
+            //_accountRepository.Save();
+            BackgroundJob.Schedule(() => CompleteP2P(p2p.Id), TimeSpan.FromSeconds(6)); //p2p id is created by line 37
 
             return p2p;
         }
@@ -50,6 +53,30 @@ namespace BankOfMikaila.Services
             {
                 throw new InvalidTransactionTypeException("P2P type is invalid");
             }
+            else if (p2p.TransactionStatus != TransactionStatus.PENDING || p2p.TransactionStatus != TransactionStatus.RECURRING) //is not really needed as we do not have update or cancel p2p
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to modify p2p " + p2p.Id);
+            }
+        }
+
+        public void CompleteP2P(long p2pId)
+        {
+            var p2p = GetP2P(p2pId);
+
+            if (p2p.TransactionStatus != TransactionStatus.PENDING)
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to complete p2p " + p2p.Id);
+            }
+
+            var payerAccount = p2p.Account;
+            var payeeAccount = p2p.Receiver;
+
+            payerAccount.Balance -= p2p.Amount;
+            payeeAccount.Balance += p2p.Amount;
+            p2p.TransactionStatus = TransactionStatus.COMPLETED;
+
+            _p2pRepository.Save();
+            _accountRepository.Save(); 
         }
     }
 }

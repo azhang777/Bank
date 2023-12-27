@@ -22,15 +22,14 @@ namespace BankOfMikaila.Services
             VerifyDeposit(deposit);
             //check if account exists
             var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
-            //add account balance with deposit amount
             deposit.Account = account;
             deposit.AccountId = accountId;
-            account.Balance += deposit.Amount;
             //add deposit to the transactions database.
             _depositRepository.Create(deposit);
             _depositRepository.Save();
-            _accountRepository.Save();
-            BackgroundJob.Schedule(() => CompleteDeposit(deposit.Id), TimeSpan.FromSeconds(6)); //seems that hangfire serializes job parameters. Need to pass in simple id to get deposit within the method rather than pass in complex object Deposit itself. The method will fail because if we pass a deposit object.
+            //_accountRepository.Save(); //will be saved in the CompleteDeposit method
+            BackgroundJob.Schedule(() => CompleteDeposit(deposit.Id), TimeSpan.FromSeconds(5)); //seems that hangfire serializes job parameters. Need to pass in simple id to get deposit within the method rather than pass in complex object Deposit itself. The method will fail because if we pass a deposit object.
+            
             return deposit;
         }
 
@@ -79,18 +78,11 @@ namespace BankOfMikaila.Services
         public void CancelDeposit(long depositId) //may change to bool
         {
             var existingDeposit = GetDeposit(depositId);
+            VerifyDeposit(existingDeposit);
             var originalAccount = _accountRepository.Get(existingDeposit.AccountId); //if deposit exist, account must exist. no need to throw exception here
 
-            //if only in pending state
-            if (existingDeposit.TransactionStatus == TransactionStatus.PENDING)
-            {
-                existingDeposit.TransactionStatus = TransactionStatus.CANCELED;
-                originalAccount.Balance -= existingDeposit.Amount;
-            }
-            else
-            {
-                throw new InvalidTransactionStatusException("Invalid status: unable to cancel deposit " + depositId);
-            }
+            existingDeposit.TransactionStatus = TransactionStatus.CANCELED;
+            originalAccount.Balance -= existingDeposit.Amount;
 
             _depositRepository.Save(); //forgot to changes to database... thats why the endpoint did not work
             _accountRepository.Save();
@@ -101,6 +93,10 @@ namespace BankOfMikaila.Services
             if (deposit.TransactionType != TransactionType.DEPOSIT)
             {
                 throw new InvalidTransactionTypeException("Deposit type is invalid");
+            }
+            else if (deposit.TransactionStatus != TransactionStatus.PENDING || deposit.TransactionStatus != TransactionStatus.RECURRING)
+            {
+                throw new InvalidTransactionStatusException("Invalid status: unable to modify deposit " + deposit.Id);
             }
         }
 
@@ -114,9 +110,12 @@ namespace BankOfMikaila.Services
                 throw new InvalidTransactionStatusException("Invalid status: unable to complete deposit "  + deposit.Id);
             }
 
+            var account = deposit.Account;
+            account.Balance += deposit.Amount;
             deposit.TransactionStatus = TransactionStatus.COMPLETED;
 
             _depositRepository.Save();
+            _accountRepository.Save();
         }
     }
 }
