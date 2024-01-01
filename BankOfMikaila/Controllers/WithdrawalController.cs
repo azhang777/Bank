@@ -23,29 +23,16 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateWithdrawal(long accountId, [FromBody] WithdrawalCreateDTO withdrawalCreateDTO)
         {
-            try
-            {
-                var withdrawal = _withdrawalResponse.CreateWithdrawal(accountId, withdrawalCreateDTO);
-                
-                DataResponse successResponse = new()
-                {
-                    Code = StatusCodes.Status201Created,
-                    Message = "Success - Withdrawal created",
-                    Data = withdrawal
-                };
+            var withdrawal = _withdrawalResponse.CreateWithdrawal(accountId, withdrawalCreateDTO);
 
-                return CreatedAtRoute("GetWithdrawal", new {withdrawalId = withdrawal.Id}, successResponse);
-            }
-            catch (Exception ex)
+            DataResponse successResponse = new()
             {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
+                Code = StatusCodes.Status201Created,
+                Message = "Success - Withdrawal created",
+                Data = withdrawal
+            };
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return CreatedAtRoute("GetWithdrawal", new { withdrawalId = withdrawal.Id }, successResponse);
         }
 
         [HttpGet("withdrawals/{withdrawalId}", Name = "GetWithdrawal")]
@@ -54,20 +41,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetWithdrawal(long withdrawalId)
         {
-            try
-            {
-                return _withdrawalResponse.GetWithdrawal(withdrawalId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _withdrawalResponse.GetWithdrawal(withdrawalId);
         }
 
         [HttpGet("accounts/{accountId}/withdrawals", Name = "GetWithdrawalsByAccount")]
@@ -76,20 +50,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetWithdrawalsByAccount(long accountId)
         {
-            try
-            {
-                return _withdrawalResponse.GetWithdrawalsByAccount(accountId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _withdrawalResponse.GetWithdrawalsByAccount(accountId);
         }
 
         [HttpPut("withdrawals/{withdrawalId}", Name = "UpdateWithdrawal")]
@@ -99,20 +60,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> UpdateWithdrawal(long withdrawalId, [FromBody] WithdrawalUpdateDTO withdrawalUpdateDTO)
         {
-            try
-            {
-                return _withdrawalResponse.UpdateWithdrawal(withdrawalId, withdrawalUpdateDTO);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _withdrawalResponse.UpdateWithdrawal(withdrawalId, withdrawalUpdateDTO);
         }
 
         [HttpDelete("withdrawals/{withdrawalId}", Name = "CancelWithdrawal")]
@@ -121,22 +69,9 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CancelWithdrawal(long withdrawalId)
         {
-            try
-            {
-                _withdrawalResponse.CancelWithdrawal(withdrawalId);
-                
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
+            _withdrawalResponse.CancelWithdrawal(withdrawalId);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return NoContent();
         }
     }
 }

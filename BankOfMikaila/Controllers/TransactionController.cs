@@ -20,20 +20,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetAllTransactions()
         {
-            try
-            {
-                return _transactionResponse.GetAllTransactions();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _transactionResponse.GetAllTransactions();
         }
     }
 }

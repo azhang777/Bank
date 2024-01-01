@@ -1,4 +1,5 @@
-﻿using BankOfMikaila.Models;
+﻿using BankOfMikaila.Exceptions;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
 
 
@@ -26,12 +27,19 @@ namespace BankOfMikaila.Services
 
         public Customer GetCustomer(long customerId)
         {
-            return _customerRepository.Get(customerId, customer => customer.Address);
+            return _customerRepository.Get(customerId, customer => customer.Address) ?? throw new CustomerNotFoundException("Customer " + customerId + " not found");
         }
 
         public IEnumerable<Customer> GetAllCustomers()
         {
-            return _customerRepository.GetAll(customer => customer.Address);
+            var customers = _customerRepository.GetAll(customer => customer.Address);
+
+            if (customers.Count == 0)
+            {
+                throw new CustomerNotFoundException("No customers found");
+            }
+
+            return customers;
         }
 
         public Customer UpdateCustomer(long customerId, Customer updatedCustomer)
@@ -71,17 +79,20 @@ namespace BankOfMikaila.Services
         //    return _customerRepository.Save(); 
         //}
 
-        //GetCustomerByAccountId
+
         public Customer GetCustomerByAccount(long accountId)
         {
-            long customerId = _accountRepository.Get(accountId).CustomerId; //works? if we get accountId 5 we get customerId1, but the object is null
+            var account = _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found");
+            long customerId = account.CustomerId; 
             var customer = _customerRepository.Get(customerId, customer => customer.Address);
 
             return customer;
         }
-        //GetAllCustomerAccounts in account service
     }
 }
+
+
+
 /*
  *      with DTO
                private readonly IMapper _mapper;

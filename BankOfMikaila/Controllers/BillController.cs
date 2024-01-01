@@ -23,29 +23,16 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> CreateBill(long accountId, [FromBody] BillCreateDTO billCreateDTO)
         {
-            try
-            {
-                var bill = _billResponse.CreateBill(accountId, billCreateDTO);
-                
-                DataResponse successResponse = new()
-                {
-                    Code = StatusCodes.Status201Created,
-                    Message = "Success - Bill created",
-                    Data = bill
-                };
+            var bill = _billResponse.CreateBill(accountId, billCreateDTO);
 
-                return CreatedAtRoute("GetBill", new { billId = bill.Id }, successResponse);
-            }
-            catch (Exception ex)
+            DataResponse successResponse = new()
             {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
+                Code = StatusCodes.Status201Created,
+                Message = "Success - Bill created",
+                Data = bill
+            };
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return CreatedAtRoute("GetBill", new { billId = bill.Id }, successResponse);
         }
 
         [HttpGet("bills/{billId}", Name = "GetBill")]
@@ -54,20 +41,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetBill(long billId)
         {
-            try
-            {
-                return _billResponse.GetBill(billId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _billResponse.GetBill(billId);
         }
 
         [HttpGet("accounts/{accountId}/bills", Name = "GetBillsByAccount")]
@@ -76,20 +50,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetBillsByAccount(long accountId)
         {
-            try
-            {
-                return _billResponse.GetBillsByAccount(accountId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _billResponse.GetBillsByAccount(accountId);
         }
 
         [HttpGet("customers/{customerId}/bills", Name = "GetBillsByCustomer")]
@@ -98,20 +59,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetBillsByCustomer(long customerId)
         {
-            try
-            {
-                return _billResponse.GetBillsByCustomer(customerId);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _billResponse.GetBillsByCustomer(customerId);
         }
 
         [HttpPut("bills/{billId}")]
@@ -121,20 +69,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> UpdateBill(long billId, [FromBody] BillUpdateDTO billUpdateDTO)
         {
-            try
-            {
-                return _billResponse.UpdateBill(billId, billUpdateDTO);
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return _billResponse.UpdateBill(billId, billUpdateDTO);
         }
 
         [HttpDelete("bills/{billId}")]
@@ -143,22 +78,9 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> DeleteBill(long billId)
         {
-            try
-            {
-                _billResponse.DeleteBill(billId);
-                
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                ErrorResponse errorResponse = new()
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Message = ex.Message
-                };
+            _billResponse.DeleteBill(billId);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
-            }
+            return NoContent();
         }
     }
 }

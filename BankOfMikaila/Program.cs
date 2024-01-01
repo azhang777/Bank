@@ -1,10 +1,13 @@
 using BankOfMikaila.Config;
 using BankOfMikaila.Data;
+using BankOfMikaila.Middleware;
 using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Services;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +48,21 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddHangfire((sp, config) => 
+{
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultSQLConnection");
+    config.UseSqlServerStorage(connectionString);
+});
+builder.Services.AddHangfireServer();
+//builder.Host.UseSerilog((context, configuration) => 
+//{
+//    configuration.WriteTo.Console().MinimumLevel.Information();
+//}); //hard code serilog configuiration or
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+}); //configure serilog from application settings
 
 var app = builder.Build();
 
@@ -55,10 +73,32 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging(); //allows us to log http requests
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+//method 1:
+//app.Use(async (context, next) =>
+//{
+//    try
+//    { //every request will be executed inside try catch block statement. The exception thrown during the execution and not handled explicitly will be caught by catch block!
+//        await next(context);
+//    }
+//    catch (Exception ex)
+//    {
+//        //ErrorResponse errorResponse = new() {}
+
+//        Console.WriteLine(ex);
+//        throw;
+//    }
+//});
+
+//method 2:
+app.UseMiddleware<GlobalMiddleware>();
 
 app.MapControllers();
+
+app.UseHangfireDashboard();
 
 app.Run();
