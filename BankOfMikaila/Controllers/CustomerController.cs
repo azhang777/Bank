@@ -3,6 +3,7 @@ using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ namespace BankOfMikaila.Controllers
     
     [ApiController]
     [Route("api/customers")]
+    [EnableCors("MyPolicy")]
     public class CustomerController : ControllerBase
     {
         private readonly CustomerResponse _customerResponse;

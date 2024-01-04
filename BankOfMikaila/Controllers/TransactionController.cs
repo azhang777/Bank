@@ -1,11 +1,13 @@
 ﻿using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankOfMikaila.Controllers
 {
     [ApiController]
     [Route("api/transactions")]
+    [EnableCors("MyPolicy")]
     public class TransactionController : ControllerBase
     {
         private readonly TransactionResponse _transactionResponse;

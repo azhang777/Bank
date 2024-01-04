@@ -2,12 +2,14 @@
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankOfMikaila.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
+    [EnableCors("MyPolicy")]
     public class AccountController : ControllerBase
     {
         private readonly AccountResponse _accountResponse;
