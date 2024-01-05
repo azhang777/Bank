@@ -40,15 +40,10 @@ builder.Services.AddScoped<WithdrawalResponse>();
 builder.Services.AddScoped<DepositResponse>();
 builder.Services.AddScoped<P2PResponse>();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-});
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("MyPolicy", 
-        policy => 
+    options.AddPolicy("MyPolicy",
+        policy =>
         {
             policy.
                 WithOrigins("http://localhost:5173").
@@ -56,6 +51,12 @@ builder.Services.AddCors(options =>
                 AllowAnyMethod();
         });
 });
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

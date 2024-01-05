@@ -14,7 +14,7 @@ namespace BankOfMikaila.Controllers
     
     [ApiController]
     [Route("api/customers")]
-    [EnableCors("MyPolicy")]
+   // [EnableCors("MyPolicy")]
     public class CustomerController : ControllerBase
     {
         private readonly CustomerResponse _customerResponse;

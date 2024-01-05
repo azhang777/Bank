@@ -9,7 +9,7 @@ namespace BankOfMikaila.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
-    [EnableCors("MyPolicy")]
+   // [EnableCors("MyPolicy")]
     public class AccountController : ControllerBase
     {
         private readonly AccountResponse _accountResponse;

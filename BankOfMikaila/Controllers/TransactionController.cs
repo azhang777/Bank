@@ -7,7 +7,7 @@ namespace BankOfMikaila.Controllers
 {
     [ApiController]
     [Route("api/transactions")]
-    [EnableCors("MyPolicy")]
+ //   [EnableCors("MyPolicy")]
     public class TransactionController : ControllerBase
     {
         private readonly TransactionResponse _transactionResponse;

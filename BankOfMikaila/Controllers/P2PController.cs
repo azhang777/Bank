@@ -8,7 +8,7 @@ namespace BankOfMikaila.Controllers
 {
     [ApiController]
     [Route("api/")]
-    [EnableCors("MyPolicy")]
+ //   [EnableCors("MyPolicy")]
     public class P2PController : ControllerBase
     {
         private readonly P2PResponse _p2pResponse;
