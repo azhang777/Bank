@@ -40,11 +40,24 @@ builder.Services.AddScoped<WithdrawalResponse>();
 builder.Services.AddScoped<DepositResponse>();
 builder.Services.AddScoped<P2PResponse>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.
+                WithOrigins("http://localhost:5173").
+                AllowAnyHeader().
+                AllowAnyMethod();
+        });
+});
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-}); 
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
@@ -76,6 +89,10 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging(); //allows us to log http requests
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("MyPolicy");
 
 app.UseAuthorization();
 //method 1:
