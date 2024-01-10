@@ -38,12 +38,21 @@ namespace BankOfMikaila.Controllers
         }
 
         [HttpGet("bills/{billId}", Name = "GetBill")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<DataResponse> GetBill(long billId)
         {
             return _billResponse.GetBill(billId);
+        }
+
+        [HttpGet("bills", Name = "GetAllBills")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<DataResponse> GetAllBills()
+        {
+            return _billResponse.GetAllBills();
         }
 
         [HttpGet("accounts/{accountId}/bills", Name = "GetBillsByAccount")]

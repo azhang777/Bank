@@ -32,8 +32,20 @@ namespace BankOfMikaila.Response
             DataResponse successResponse = new()
             {
                 Code = StatusCodes.Status201Created,
-                Message = "Success - Bill created",
+                Message = "Success - Bill retrieved",
                 Data = _mapper.Map<BillDTO>(_billService.GetBill(billId))
+            };
+
+            return successResponse;
+        }
+
+        public DataResponse GetAllBills()
+        {
+            DataResponse successResponse = new()
+            {
+                Code = StatusCodes.Status200OK,
+                Message = "Success - All bills retrieved",
+                Data = _mapper.Map<IEnumerable<BillDTO>>(_billService.GetAllBills())
             };
 
             return successResponse;

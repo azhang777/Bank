@@ -1,5 +1,6 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
+using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 namespace BankOfMikaila.Services
 {
@@ -28,6 +29,18 @@ namespace BankOfMikaila.Services
         public Bill GetBill(long billId)
         {
             return _billRepository.Get(billId) ?? throw new BillNotFoundException("Bill " + billId + " not found");
+        }
+
+        public  IEnumerable<Bill> GetAllBills()
+        {
+            var bills = _billRepository.GetAll();
+
+            if (bills.Count == 0)
+            {
+                throw new CustomerNotFoundException("No customers found");
+            }
+
+            return bills;
         }
 
         public IEnumerable<Bill> GetBillsByAccount(long accountId)
