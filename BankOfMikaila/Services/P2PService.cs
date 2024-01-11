@@ -31,8 +31,8 @@ namespace BankOfMikaila.Services
             var payeeAccount = _accountRepository.Get(p2p.ReceiverId) ?? throw new AccountNotFoundException("Account " + p2p.ReceiverId + " not found");
 
             p2p.AccountId = payerId;
-            p2p.Account = payeeAccount;
-            p2p.Receiver = payerAccount; //from P2PCreateDTO, only receiverId is linked. We need to link the account, account id, and receiver to the p2p object
+            p2p.Account = payerAccount;
+            p2p.Receiver = payeeAccount; //from P2PCreateDTO, only receiverId is linked. We need to link the account, account id, and receiver to the p2p object
 
             _p2pRepository.Create(p2p);
             _p2pRepository.Save();
@@ -44,7 +44,7 @@ namespace BankOfMikaila.Services
 
         public P2P GetP2P(long p2pId)
         {
-            return _p2pRepository.Get(p2pId) ?? throw new TransactionNotFoundException("P2P of id " + p2pId + " not found");
+            return _p2pRepository.Get(p2pId, p2p => p2p.Account, p2p => p2p.Receiver) ?? throw new TransactionNotFoundException("P2P of id " + p2pId + " not found");
         }
 
         private static void VerifyP2P(P2P p2p)
@@ -53,7 +53,7 @@ namespace BankOfMikaila.Services
             {
                 throw new InvalidTransactionTypeException("P2P type is invalid");
             }
-            else if (p2p.TransactionStatus != TransactionStatus.PENDING || p2p.TransactionStatus != TransactionStatus.RECURRING) //is not really needed as we do not have update or cancel p2p
+            else if (p2p.TransactionStatus != TransactionStatus.PENDING && p2p.TransactionStatus != TransactionStatus.RECURRING) //is not really needed as we do not have update or cancel p2p
             {
                 throw new InvalidTransactionStatusException("Invalid status: unable to modify p2p " + p2p.Id);
             }

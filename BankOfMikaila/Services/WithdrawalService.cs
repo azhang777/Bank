@@ -37,7 +37,7 @@ namespace BankOfMikaila.Services
 
         public Withdrawal GetWithdrawal(long withdrawalId)
         {
-            return _withdrawalRepository.Get(withdrawalId) ?? throw new TransactionNotFoundException("Withdrawal " + withdrawalId + " not found");
+            return _withdrawalRepository.Get(withdrawalId, withdrawal => withdrawal.Account) ?? throw new TransactionNotFoundException("Withdrawal " + withdrawalId + " not found");
         }
 
         public IEnumerable<Withdrawal> GetWithdrawalsByAccount(long accountId)
@@ -102,7 +102,7 @@ namespace BankOfMikaila.Services
             {
                 throw new InvalidTransactionTypeException("Withdrawal type is invalid");
             }
-            else if (withdrawal.TransactionStatus != TransactionStatus.PENDING || withdrawal.TransactionStatus != TransactionStatus.RECURRING)
+            else if (withdrawal.TransactionStatus != TransactionStatus.PENDING && withdrawal.TransactionStatus != TransactionStatus.RECURRING)
             {
                 throw new InvalidTransactionStatusException("Invalid status: unable to modify withdrawal " + withdrawal.Id);
             }
@@ -124,7 +124,8 @@ namespace BankOfMikaila.Services
             {
                 throw new NoFundsAvailableException("Account " + account.Id + " does not have available funds to make this transaction");
             }
-            
+
+
             account.Balance -= withdrawal.Amount;
             withdrawal.TransactionStatus = TransactionStatus.COMPLETED;
 

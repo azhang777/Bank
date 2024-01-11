@@ -35,8 +35,8 @@ namespace BankOfMikaila.Services
 
         public Deposit GetDeposit(long depositId)
         {
-            return _depositRepository.Get(depositId) ?? throw new TransactionNotFoundException("Deposit " + depositId + " not found" );
-        }
+            return _depositRepository.Get(depositId, deposit => deposit.Account) ?? throw new TransactionNotFoundException("Deposit " + depositId + " not found" );
+        } //depost => deposit.Account, in CompleteDeposit, this get method did not seem to bring deposit's account along. Similar with Customer and its address.
 
         public IEnumerable<Deposit> GetDepositsByAccount(long accountId)
         {
@@ -94,7 +94,7 @@ namespace BankOfMikaila.Services
             {
                 throw new InvalidTransactionTypeException("Deposit type is invalid");
             }
-            else if (deposit.TransactionStatus != TransactionStatus.PENDING || deposit.TransactionStatus != TransactionStatus.RECURRING)
+            else if (deposit.TransactionStatus != TransactionStatus.PENDING && deposit.TransactionStatus != TransactionStatus.RECURRING)
             {
                 throw new InvalidTransactionStatusException("Invalid status: unable to modify deposit " + deposit.Id);
             }
