@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO;
 using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Repository.IRepository;
@@ -22,10 +23,10 @@ namespace BankOfMikaila.Controllers
     {
         private readonly CustomerResponse _customerResponse;
         private readonly AccountResponse _accountResponse;
-        private readonly IProducer<string, string> _producer;
+        private readonly IProducer<string, AccountDTO> _producer;
         private readonly IMapper _mapper;
         private const string KafkaTopicName = "BankAccounts";
-        public CustomerController(CustomerResponse customerResponse, AccountResponse accountResponse, IProducer<string, string> producer, IMapper mapper)
+        public CustomerController(CustomerResponse customerResponse, AccountResponse accountResponse, IProducer<string, AccountDTO> producer, IMapper mapper)
         {
             _customerResponse = customerResponse;
             _accountResponse = accountResponse;
@@ -93,13 +94,16 @@ namespace BankOfMikaila.Controllers
                 Message = "Success - Account created",
                 Data = accountDTO
             };
-
-            var message = new Message<string, string>
+           
+            var message = new Message<string, AccountDTO>
             {
-                Value = accountCreateDTO.ToString()
+                Key = accountDTO.NickName,
+                Value = accountDTO,
             };
 
             await _producer.ProduceAsync(KafkaTopicName, message);
+
+            _producer.Flush();
             return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
         }
 

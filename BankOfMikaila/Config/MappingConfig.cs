@@ -16,6 +16,7 @@ namespace BankOfMikaila.Config
             CreateMap<Account, AccountDTO>().ReverseMap();
             CreateMap<Account, AccountCreateDTO>().ReverseMap();
             CreateMap<Account, AccountUpdateDTO>().ReverseMap();
+            CreateMap<AccountDTO, AccountCreateDTO>().ReverseMap();
 
             CreateMap<Bill, BillDTO>().ReverseMap();
             CreateMap<Bill, BillCreateDTO>().ReverseMap();

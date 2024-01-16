@@ -5,6 +5,7 @@ using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Response.Format;
 using BankOfMikaila.Services;
+using Confluent.Kafka;
 
 namespace BankOfMikaila.Response
 {

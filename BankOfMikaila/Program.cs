@@ -2,11 +2,15 @@ using BankOfMikaila.Config;
 using BankOfMikaila.Data;
 using BankOfMikaila.Middleware;
 using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO;
 using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Services;
 using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -44,12 +48,22 @@ builder.Services.AddScoped<DepositResponse>();
 builder.Services.AddScoped<P2PResponse>();
 
 builder.Services.Configure<ProducerConfig>(builder.Configuration.GetSection("Kafka"));
+builder.Services.Configure<SchemaRegistryConfig>(builder.Configuration.GetSection("SchemaRegistry"));
 
-builder.Services.AddSingleton<IProducer<string, string>>(sp =>
+builder.Services.AddSingleton<ISchemaRegistryClient>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<SchemaRegistryConfig>>();
+
+    return new CachedSchemaRegistryClient(config.Value);
+});
+
+builder.Services.AddSingleton<IProducer<string, AccountDTO>>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<ProducerConfig>>();
+    var schemaRegistry = sp.GetRequiredService<ISchemaRegistryClient>();
 
-    return new ProducerBuilder<String, string>(config.Value)
+    return new ProducerBuilder<String, AccountDTO>(config.Value)
+        .SetValueSerializer(new JsonSerializer<AccountDTO>(schemaRegistry).AsSyncOverAsync())
         .Build();
 });
 
