@@ -74,7 +74,12 @@ namespace BankOfMikaila.Services
         public void DeleteAccount(long accountId)
         {
             var accountToDelete = GetAccount(accountId);
-            
+
+            if (accountToDelete.Balance != 0)
+            {
+                throw new CustomException("Account cannot be deleted because balance is 0");
+            }
+
             _accountRepository.Remove(accountToDelete);
             _accountRepository.Save();
         }

@@ -1,12 +1,15 @@
 using BankOfMikaila.Config;
 using BankOfMikaila.Data;
 using BankOfMikaila.Middleware;
+using BankOfMikaila.Models;
 using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Services;
+using Confluent.Kafka;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +42,16 @@ builder.Services.AddScoped<TransactionResponse>();
 builder.Services.AddScoped<WithdrawalResponse>();
 builder.Services.AddScoped<DepositResponse>();
 builder.Services.AddScoped<P2PResponse>();
+
+builder.Services.Configure<ProducerConfig>(builder.Configuration.GetSection("Kafka"));
+
+builder.Services.AddSingleton<IProducer<string, string>>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<ProducerConfig>>();
+
+    return new ProducerBuilder<String, string>(config.Value)
+        .Build();
+});
 
 builder.Services.AddCors(options =>
 {

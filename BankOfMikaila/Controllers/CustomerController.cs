@@ -1,8 +1,11 @@
-﻿using BankOfMikaila.Models.DTO.Create;
+﻿using AutoMapper;
+using BankOfMikaila.Models;
+using BankOfMikaila.Models.DTO.Create;
 using BankOfMikaila.Models.DTO.Update;
 using BankOfMikaila.Repository.IRepository;
 using BankOfMikaila.Response;
 using BankOfMikaila.Response.Format;
+using Confluent.Kafka;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +22,15 @@ namespace BankOfMikaila.Controllers
     {
         private readonly CustomerResponse _customerResponse;
         private readonly AccountResponse _accountResponse;
-        //logger
-        public CustomerController(CustomerResponse customerResponse, AccountResponse accountResponse)
+        private readonly IProducer<string, string> _producer;
+        private readonly IMapper _mapper;
+        private const string KafkaTopicName = "BankAccounts";
+        public CustomerController(CustomerResponse customerResponse, AccountResponse accountResponse, IProducer<string, string> producer, IMapper mapper)
         {
             _customerResponse = customerResponse;
             _accountResponse = accountResponse;
+            _producer = producer;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -76,7 +83,7 @@ namespace BankOfMikaila.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<DataResponse> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
+        public async Task<ActionResult<DataResponse>> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
         {
             var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
 
@@ -87,8 +94,32 @@ namespace BankOfMikaila.Controllers
                 Data = accountDTO
             };
 
+            var message = new Message<string, string>
+            {
+                Value = accountCreateDTO.ToString()
+            };
+
+            await _producer.ProduceAsync(KafkaTopicName, message);
             return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
         }
+
+        //[HttpPost("{customerId}/accounts", Name = "CreateAccount")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public ActionResult<DataResponse> CreateAccount(long customerId, [FromBody] AccountCreateDTO accountCreateDTO)
+        //{
+        //    var accountDTO = _accountResponse.CreateAccount(customerId, accountCreateDTO);
+
+        //    DataResponse successResponse = new()
+        //    {
+        //        Code = StatusCodes.Status201Created,
+        //        Message = "Success - Account created",
+        //        Data = accountDTO
+        //    };
+        //    return CreatedAtRoute("GetAccount", new { accountId = accountDTO.Id }, successResponse);
+        //}
 
         [HttpGet("{customerId}/accounts", Name = "GetAccountsByCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
