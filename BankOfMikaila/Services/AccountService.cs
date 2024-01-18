@@ -24,11 +24,11 @@ namespace BankOfMikaila.Services
             var customer = _customerRepository.Get(customerId, customer => customer.Address) ?? throw new CustomerNotFoundException("Customer " + customerId + " not found");
             newAccount.Customer = customer;
             _accountRepository.Create(newAccount);
+            _accountRepository.Save();
 
             var expiryTime = DateTimeOffset.Now.AddSeconds(40);
             _cacheService.SetData($"account{newAccount.Id}", newAccount, expiryTime);
-            _cacheService.AddData("accounts", newAccount);
-            _accountRepository.Save();
+            _cacheService.Invalidate("accounts");
 
             return newAccount;
         }
@@ -102,11 +102,11 @@ namespace BankOfMikaila.Services
             existingAccount.Rewards = updatedAccount.Rewards;
             existingAccount.Balance = updatedAccount.Balance;
 
-            _cacheService.RemoveData($"account{accountId}");
-            _cacheService.Invalidate("accounts");
-
             _accountRepository.Update(existingAccount);
             _customerRepository.Save();
+
+            _cacheService.RemoveData($"account{accountId}");
+            _cacheService.Invalidate("accounts");
 
             return existingAccount;
         }
@@ -120,10 +120,12 @@ namespace BankOfMikaila.Services
                 throw new CustomException("Account cannot be deleted because balance is 0");
             }
 
-            _cacheService.RemoveData($"account{accountId}");
-            _cacheService.Invalidate("accounts");
             _accountRepository.Remove(accountToDelete);
             _accountRepository.Save();
+
+
+            _cacheService.RemoveData($"account{accountId}");
+            _cacheService.Invalidate("accounts");
         }
 
         //public bool DeleteCustomer(long id)

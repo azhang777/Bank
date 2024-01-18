@@ -10,11 +10,12 @@ namespace BankOfMikaila.Services
     {
         public readonly IDepositRepository _depositRepository;
         public readonly IAccountRepository _accountRepository;
-
-        public DepositService(IDepositRepository depositRepository, IAccountRepository accountRepository)
+        public readonly ICacheService _cacheService;
+        public DepositService(IDepositRepository depositRepository, IAccountRepository accountRepository, ICacheService cacheService)
         {
             _depositRepository = depositRepository;
             _accountRepository = accountRepository;
+            _cacheService = cacheService;
         }
 
         public Deposit CreateDeposit(long accountId, Deposit deposit)
@@ -27,6 +28,8 @@ namespace BankOfMikaila.Services
             //add deposit to the transactions database.
             _depositRepository.Create(deposit);
             _depositRepository.Save();
+
+            _cacheService.Invalidate("transactions");
             //_accountRepository.Save(); //will be saved in the CompleteDeposit method
             BackgroundJob.Schedule(() => CompleteDeposit(deposit.Id), TimeSpan.FromSeconds(5)); //seems that hangfire serializes job parameters. Need to pass in simple id to get deposit within the method rather than pass in complex object Deposit itself. The method will fail because if we pass a deposit object.
             
@@ -67,8 +70,11 @@ namespace BankOfMikaila.Services
             originalAccount.Balance += (updatedDeposit.Amount - originalAmount); 
 
             _depositRepository.Update(existingDeposit);
+
             _depositRepository.Save();
             _accountRepository.Save();
+
+            _cacheService.Invalidate("transactions");
 
             return updatedDeposit;
         }
@@ -86,6 +92,8 @@ namespace BankOfMikaila.Services
 
             _depositRepository.Save(); //forgot to changes to database... thats why the endpoint did not work
             _accountRepository.Save();
+
+            _cacheService.Invalidate("transactions");
         }
 
         private static void VerifyDeposit(Deposit deposit)
@@ -116,6 +124,8 @@ namespace BankOfMikaila.Services
 
             _depositRepository.Save();
             _accountRepository.Save();
+
+            _cacheService.Invalidate("transactions");
         }
     }
 }

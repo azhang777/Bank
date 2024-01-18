@@ -23,10 +23,11 @@ namespace BankOfMikaila.Services
         {
             _customerRepository.Create(customer);
 
+            _customerRepository.Save();
+
             var expiryTime = DateTimeOffset.Now.AddSeconds(40);
             _cacheService.SetData($"customer{customer.Id}", customer, expiryTime);
-
-            _customerRepository.Save();
+            _cacheService.Invalidate("customers");
 
             return customer;
         }
@@ -103,6 +104,8 @@ namespace BankOfMikaila.Services
 
             _customerRepository.Update(existingCustomer);
             _customerRepository.Save();
+
+            _cacheService.Invalidate("customers");
 
             return existingCustomer;
         }

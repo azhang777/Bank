@@ -12,11 +12,12 @@ namespace BankOfMikaila.Services
     {
         public readonly IWithdrawalRepository _withdrawalRepository;
         public readonly IAccountRepository _accountRepository;
-
-        public WithdrawalService(IWithdrawalRepository withdrawalRepository, IAccountRepository accountRepository)
+        public readonly ICacheService _cacheService;
+        public WithdrawalService(IWithdrawalRepository withdrawalRepository, IAccountRepository accountRepository, ICacheService cacheService)
         {
             _withdrawalRepository = withdrawalRepository;
             _accountRepository = accountRepository;
+            _cacheService = cacheService;
         }
 
         public Withdrawal CreateWithdrawal(long accountId, Withdrawal withdrawal)
@@ -28,10 +29,12 @@ namespace BankOfMikaila.Services
             withdrawal.AccountId = accountId;
             //add withdrawal to the transactions database.
             _withdrawalRepository.Create(withdrawal);
+
+            _cacheService.Invalidate("transactions");
             _withdrawalRepository.Save();
             //_accountRepository.Save();
             BackgroundJob.Schedule(() => CompleteWithdrawal(withdrawal.Id), TimeSpan.FromSeconds(6)); //CompleteWithdrawal checks if withdrawal is pending and if account has enough to withdrawal
-            
+            _cacheService.Invalidate("transactions");
             return withdrawal;
         }
 
@@ -78,6 +81,8 @@ namespace BankOfMikaila.Services
             _withdrawalRepository.Save();
             _accountRepository.Save();
 
+            _cacheService.Invalidate("transactions");
+
             return updatedWithdrawal;
         }
 
@@ -94,6 +99,8 @@ namespace BankOfMikaila.Services
 
             _withdrawalRepository.Save();
             _accountRepository.Save();
+
+            _cacheService.Invalidate("transactions");
         }
 
         private static void VerifyWithdrawal(Withdrawal withdrawal)
@@ -122,6 +129,9 @@ namespace BankOfMikaila.Services
 
             if (account.Balance < withdrawal.Amount)
             {
+                withdrawal.TransactionStatus = TransactionStatus.CANCELED;
+                _withdrawalRepository.Save();
+                _cacheService.Invalidate("transactions");
                 throw new NoFundsAvailableException("Account " + account.Id + " does not have available funds to make this transaction");
             }
 
@@ -129,8 +139,10 @@ namespace BankOfMikaila.Services
             account.Balance -= withdrawal.Amount;
             withdrawal.TransactionStatus = TransactionStatus.COMPLETED;
 
+
             _withdrawalRepository.Save();
             _accountRepository.Save();
+                            _cacheService.Invalidate("transactions");
         }
     }
 }

@@ -18,7 +18,8 @@ namespace BankOfMikaila.Services
 
         public IEnumerable<Transaction> GetAllTransactions()
         {
-            var cacheData = _cacheService.GetData<IEnumerable<Transaction>>("transactions");
+            
+            var cacheData = _cacheService.GetData<List<Transaction>>("transactions");
 
             if (cacheData != null)
             {

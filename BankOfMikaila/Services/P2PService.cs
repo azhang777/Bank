@@ -10,11 +10,13 @@ namespace BankOfMikaila.Services
     {
         private readonly IP2PRepository _p2pRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly ICacheService _cacheService;
 
-        public P2PService(IP2PRepository p2pRepository, IAccountRepository accountRepository)
+        public P2PService(IP2PRepository p2pRepository, IAccountRepository accountRepository, ICacheService cacheService)
         {
             _p2pRepository = p2pRepository;
             _accountRepository = accountRepository;
+            _cacheService = cacheService;
         }
 
         public P2P CreateP2P(long payerId, P2P p2p)
@@ -35,6 +37,9 @@ namespace BankOfMikaila.Services
             p2p.Receiver = payeeAccount; //from P2PCreateDTO, only receiverId is linked. We need to link the account, account id, and receiver to the p2p object
 
             _p2pRepository.Create(p2p);
+
+            _cacheService.Invalidate("transactions");
+
             _p2pRepository.Save();
             //_accountRepository.Save();
             BackgroundJob.Schedule(() => CompleteP2P(p2p.Id), TimeSpan.FromSeconds(6)); //p2p id is created by line 37

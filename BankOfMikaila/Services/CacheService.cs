@@ -14,6 +14,7 @@ namespace BankOfMikaila.Services
 
         public T GetData<T>(string key)
         {
+            //_cacheDb.KeyDelete("transactions");
             var value = _cacheDb.StringGet(key);
             if(!string.IsNullOrEmpty(value))
             {
@@ -41,13 +42,6 @@ namespace BankOfMikaila.Services
             var isSet = _cacheDb.StringSet(key, JsonSerializer.Serialize(value), expiryTime);
 
             return isSet;
-        }
-
-        public bool AddData<T>(string key, T value)
-        {
-            var isAdded = _cacheDb.SetAdd(key, JsonSerializer.Serialize(value));
-
-            return isAdded;
         }
 
         public object Invalidate(string key)

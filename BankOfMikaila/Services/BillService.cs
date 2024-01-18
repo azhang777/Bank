@@ -24,6 +24,8 @@ namespace BankOfMikaila.Services
             _billRepository.Create(newBill);
             _billRepository.Save();
 
+            _cacheService.Invalidate("bills");
+
             return newBill;
         }
 
@@ -99,14 +101,19 @@ namespace BankOfMikaila.Services
             _billRepository.Update(existingBill);
             _billRepository.Save();
 
+            _cacheService.Invalidate("bills");
+
             return existingBill;
         }
 
         public void DeleteBill(long billId)
         {
             var billToDelete = GetBill(billId); //no need to throw an exception bc the GetBill already covers it
+
             _billRepository.Remove(billToDelete);
             _billRepository.Save();
+
+            _cacheService.Invalidate("bills");
         }
     }
 }
