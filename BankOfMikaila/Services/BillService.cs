@@ -8,12 +8,13 @@ namespace BankOfMikaila.Services
     {
         private readonly IBillRepository _billRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly ICacheService _cacheService;
 
-
-        public BillService(IBillRepository billRepository, IAccountRepository accountRepository)
+        public BillService(IBillRepository billRepository, IAccountRepository accountRepository, ICacheService cacheService)
         {
             _billRepository = billRepository;
             _accountRepository = accountRepository;
+            _cacheService = cacheService;
         }
 
         public Bill CreateBill(long accountId, Bill newBill)
@@ -33,6 +34,21 @@ namespace BankOfMikaila.Services
 
         public  IEnumerable<Bill> GetAllBills()
         {
+            var cacheData = _cacheService.GetData<IEnumerable<Bill>>("bills");
+
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
+            else
+            {
+                cacheData = _billRepository.GetAll();
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+
+                _cacheService.SetData("bills", cacheData, expiryTime);
+            }
+
             var bills = _billRepository.GetAll();
 
             if (bills.Count == 0)

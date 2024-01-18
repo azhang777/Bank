@@ -1,6 +1,7 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
 using BankOfMikaila.Repository.IRepository;
+using System.Collections;
 using System.Net;
 
 namespace BankOfMikaila.Services
@@ -10,11 +11,12 @@ namespace BankOfMikaila.Services
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ICustomerRepository _customerRepository;
-
-        public AccountService(IAccountRepository accountRepository, ICustomerRepository customerRepository)
+        private readonly ICacheService _cacheService;
+        public AccountService(IAccountRepository accountRepository, ICustomerRepository customerRepository, ICacheService cacheService)
         {
             _accountRepository = accountRepository;
             _customerRepository = customerRepository;
+            _cacheService = cacheService;
         }
 
         public Account CreateAccount(long customerId, Account newAccount)
@@ -22,6 +24,10 @@ namespace BankOfMikaila.Services
             var customer = _customerRepository.Get(customerId, customer => customer.Address) ?? throw new CustomerNotFoundException("Customer " + customerId + " not found");
             newAccount.Customer = customer;
             _accountRepository.Create(newAccount);
+
+            var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+            _cacheService.SetData($"account{newAccount.Id}", newAccount, expiryTime);
+
             _accountRepository.Save();
 
             return newAccount;
@@ -29,11 +35,42 @@ namespace BankOfMikaila.Services
 
         public Account GetAccount(long accountId)
         {
+            var cacheData = _cacheService.GetData<Account>("Account");
+
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
+            else
+            {
+                cacheData = _accountRepository.Get(accountId);
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+
+                _cacheService.SetData($"account{accountId}", cacheData, expiryTime);
+            }
+
             return _accountRepository.Get(accountId) ?? throw new AccountNotFoundException("Account " + accountId + " not found"); ; 
         }
 
         public IEnumerable<Account> GetAllAccounts()
-        { 
+        {
+            //check cache data
+            var cacheData = _cacheService.GetData<IEnumerable<Account>>("accounts");
+
+            if (cacheData != null && cacheData.Any())
+            {
+                return cacheData;
+            }
+            else
+            {
+                cacheData =  _accountRepository.GetAll();
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+
+                _cacheService.SetData("accounts", cacheData, expiryTime);
+            }
+
             var accounts = _accountRepository.GetAll();
             
             if (accounts.Count == 0)
@@ -79,6 +116,8 @@ namespace BankOfMikaila.Services
             {
                 throw new CustomException("Account cannot be deleted because balance is 0");
             }
+
+            _cacheService.RemoveData($"account{accountId}");
 
             _accountRepository.Remove(accountToDelete);
             _accountRepository.Save();

@@ -38,6 +38,7 @@ builder.Services.AddScoped<TransactionService>();
 builder.Services.AddScoped<WithdrawalService>();
 builder.Services.AddScoped<DepositService>();
 builder.Services.AddScoped<P2PService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddScoped<CustomerResponse>();
 builder.Services.AddScoped<AccountResponse>();
@@ -66,6 +67,7 @@ builder.Services.AddSingleton<IProducer<string, AccountDTO>>(sp =>
         .SetValueSerializer(new JsonSerializer<AccountDTO>(schemaRegistry).AsSyncOverAsync())
         .Build();
 });
+
 
 builder.Services.AddCors(options =>
 {

@@ -1,5 +1,6 @@
 ﻿using BankOfMikaila.Exceptions;
 using BankOfMikaila.Models;
+using BankOfMikaila.Repository;
 using BankOfMikaila.Repository.IRepository;
 
 
@@ -10,16 +11,21 @@ namespace BankOfMikaila.Services
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IAccountRepository _accountRepository;
-        
-        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository)
+        private readonly ICacheService _cacheService;
+        public CustomerService(ICustomerRepository customerRepository, IAccountRepository accountRepository, ICacheService cacheService)
         {
             _customerRepository = customerRepository;
             _accountRepository = accountRepository;
+            _cacheService = cacheService;
         }
 
         public Customer CreateCustomer(Customer customer)
         {
             _customerRepository.Create(customer);
+
+            var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+            _cacheService.SetData($"customer{customer.Id}", customer, expiryTime);
+
             _customerRepository.Save();
 
             return customer;
@@ -27,11 +33,41 @@ namespace BankOfMikaila.Services
 
         public Customer GetCustomer(long customerId)
         {
+            var cacheData = _cacheService.GetData<Customer>($"customer{customerId}");
+
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
+            else
+            {
+                cacheData = _customerRepository.Get(customerId);
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+
+                _cacheService.SetData($"customer{customerId}", cacheData, expiryTime);
+            }
+
             return _customerRepository.Get(customerId, customer => customer.Address) ?? throw new CustomerNotFoundException("Customer " + customerId + " not found");
         }
 
         public IEnumerable<Customer> GetAllCustomers()
         {
+            var cacheData = _cacheService.GetData<IEnumerable<Customer>>("customers");
+
+            if (cacheData != null && cacheData.Any())
+            {
+                return cacheData;
+            }
+            else
+            {
+                cacheData = _customerRepository.GetAll();
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(40);
+
+                _cacheService.SetData("customers", cacheData, expiryTime);
+            }
+
             var customers = _customerRepository.GetAll(customer => customer.Address);
 
             if (customers.Count == 0)
