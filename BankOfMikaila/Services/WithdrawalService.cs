@@ -142,7 +142,8 @@ namespace BankOfMikaila.Services
 
             _withdrawalRepository.Save();
             _accountRepository.Save();
-                            _cacheService.Invalidate("transactions");
+            _cacheService.Invalidate("transactions");
+            _cacheService.Invalidate($"account{account.Id}");
         }
     }
 }

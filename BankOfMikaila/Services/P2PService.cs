@@ -81,7 +81,10 @@ namespace BankOfMikaila.Services
             p2p.TransactionStatus = TransactionStatus.COMPLETED;
 
             _p2pRepository.Save();
-            _accountRepository.Save(); 
+            _accountRepository.Save();
+            _cacheService.Invalidate($"account{payeeAccount.Id}");
+            _cacheService.Invalidate($"account{payerAccount.Id}");
+
         }
     }
 }

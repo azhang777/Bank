@@ -35,7 +35,7 @@ namespace BankOfMikaila.Services
 
         public Account GetAccount(long accountId)
         {
-            var cacheData = _cacheService.GetData<Account>("Account");
+            var cacheData = _cacheService.GetData<Account>($"account{accountId}");
 
             if (cacheData != null)
             {
