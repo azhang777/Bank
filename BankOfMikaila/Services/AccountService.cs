@@ -27,7 +27,7 @@ namespace BankOfMikaila.Services
 
             var expiryTime = DateTimeOffset.Now.AddSeconds(40);
             _cacheService.SetData($"account{newAccount.Id}", newAccount, expiryTime);
-
+            _cacheService.AddData("accounts", newAccount);
             _accountRepository.Save();
 
             return newAccount;
@@ -101,7 +101,10 @@ namespace BankOfMikaila.Services
             existingAccount.NickName = updatedAccount.NickName;
             existingAccount.Rewards = updatedAccount.Rewards;
             existingAccount.Balance = updatedAccount.Balance;
-           
+
+            _cacheService.RemoveData($"account{accountId}");
+            _cacheService.Invalidate("accounts");
+
             _accountRepository.Update(existingAccount);
             _customerRepository.Save();
 
@@ -118,7 +121,7 @@ namespace BankOfMikaila.Services
             }
 
             _cacheService.RemoveData($"account{accountId}");
-
+            _cacheService.Invalidate("accounts");
             _accountRepository.Remove(accountToDelete);
             _accountRepository.Save();
         }

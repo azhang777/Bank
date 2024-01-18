@@ -42,5 +42,19 @@ namespace BankOfMikaila.Services
 
             return isSet;
         }
+
+        public bool AddData<T>(string key, T value)
+        {
+            var isAdded = _cacheDb.SetAdd(key, JsonSerializer.Serialize(value));
+
+            return isAdded;
+        }
+
+        public object Invalidate(string key)
+        {
+            return _cacheDb.StringGetSetExpiry(key,DateTime.Now);
+        }
+
+        
     }
 }
