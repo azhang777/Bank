@@ -62,7 +62,7 @@ namespace BankOfMikaila.Services
             }
             else
             {
-                cacheData = _customerRepository.GetAll();
+                cacheData = _customerRepository.GetAll(customer => customer.Address);
 
                 var expiryTime = DateTimeOffset.Now.AddSeconds(40);
 
