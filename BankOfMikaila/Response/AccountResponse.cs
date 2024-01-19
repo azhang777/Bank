@@ -40,7 +40,7 @@ namespace BankOfMikaila.Response
             return successResponse;
         }
 
-        public DataResponse GetAllAccounts()
+        public virtual DataResponse GetAllAccounts()
         {
             DataResponse successResponse = new()
             {
