@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34407.89
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankOfMikaila", "BankOfMikaila\BankOfMikaila.csproj", "{938873DE-F71F-42D7-B762-EEAE1E441662}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{8F325489-A9C1-4601-A510-4108AD5EB7D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{8F325489-A9C1-4601-A510-4108AD5EB7D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customer", "Customer\Customer.csproj", "{59FFB377-1C66-4EB8-A20B-53608953C7A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8F325489-A9C1-4601-A510-4108AD5EB7D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F325489-A9C1-4601-A510-4108AD5EB7D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F325489-A9C1-4601-A510-4108AD5EB7D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59FFB377-1C66-4EB8-A20B-53608953C7A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59FFB377-1C66-4EB8-A20B-53608953C7A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59FFB377-1C66-4EB8-A20B-53608953C7A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59FFB377-1C66-4EB8-A20B-53608953C7A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
